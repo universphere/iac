@@ -1,0 +1,16 @@
+- name: install utils
+  become: true
+  apt:
+    name:
+      - wget
+      - curl
+      - vim
+      - git
+      - tree
+      - htop
+      - bat
+      - wget
+      - dnsutils
+      - python3
+    update_cache: yes
+    state: present

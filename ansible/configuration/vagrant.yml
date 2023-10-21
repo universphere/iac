@@ -1,0 +1,6 @@
+- hosts: all
+  roles:
+    - ssh-keys
+    - utils
+    - docker
+    - zsh
