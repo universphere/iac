@@ -1,0 +1,46 @@
+version: '3.6'
+services:
+  web:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    hostname: '172.17.0.1'
+    container_name: gitlab-ce
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://172.17.0.1'         
+        gitlab_rails['omniauth_providers'] = [
+          {
+            name: "openid_connect", # do not change this parameter
+            label: "Keycloak", # optional label for login button, defaults to "Openid Connect"
+            args: {
+              name: "openid_connect",
+              scope: ["openid", "profile", "email"],
+              response_type: "code",
+              issuer:  "https://172.17.0.1:8443/realms/gitlab",
+              client_auth_method: "query",
+              discovery: true,
+              uid_field: "uid",
+              pkce: true,
+              client_options: {
+                identifier: "gitlab-client",
+                secret: "ld5uKbq14fel4HAXMpxiC2CaOxJIu5vi",
+                redirect_uri: "http://172.17.0.1:8080/users/auth/openid_connect/callback"
+              }
+            }
+          }
+        ]
+        gitlab_rails['omniauth_allow_single_sign_on'] = ['openid_connect']
+        gitlab_rails['omniauth_block_auto_created_users'] = false
+    ports:
+      - '8080:80'
+      - '6443:443'
+    volumes:
+      - '$GITLAB_HOME/config:/etc/gitlab'
+      - '$GITLAB_HOME/logs:/var/log/gitlab'
+      - '$GITLAB_HOME/data:/var/opt/gitlab'
+    shm_size: '256m'
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0" 
+          memory: 6G
