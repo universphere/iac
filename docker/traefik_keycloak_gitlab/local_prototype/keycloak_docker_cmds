@@ -1,0 +1,13 @@
+# TODO: write as docker compose file
+
+docker run \
+  --name keycloak \
+  -e KEYCLOAK_ADMIN=admin \
+  -e KEYCLOAK_ADMIN_PASSWORD=password \
+  -e KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/conf/server.crt.pem \
+  -e KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/conf/server.key.pem \
+  -v $PWD/cert.pem:/opt/keycloak/conf/server.crt.pem \
+  -v $PWD/key.pem:/opt/keycloak/conf/server.key.pem \
+  -p 8443:8443 \
+  quay.io/keycloak/keycloak:17.0.0 \
+  start-dev
