@@ -6,7 +6,7 @@
   # hosts: localhost
   # connection: local
   tasks:
-    - name: Set up trafik container
+    - name: Set up traefik container
       become: true
       community.docker.docker_container:
         name: traefik
