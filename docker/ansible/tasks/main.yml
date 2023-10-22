@@ -1,0 +1,100 @@
+- name: Create and set up the the container infrastructure
+  hosts: all
+  remote_user: k8s 
+
+  # use this as alternative when using it locally  
+  # hosts: localhost
+  # connection: local
+  tasks:
+    - name: Set up trafik container
+      become: true
+      community.docker.docker_container:
+        name: traefik
+        image: "traefik:v2.10"
+        restart_policy: "always"
+        recreate: true
+
+        command:
+          - "--providers.docker=true"
+          # Allow both entrypoints 80 and 443 but always redirect to 443
+          - "--entrypoints.web.address=:80"
+          - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+          - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+          - "--entrypoints.websecure.address=:443"
+          # Letsencrypt; TODO: Set correct E-Mail later
+          - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+          - "--certificatesresolvers.myresolver.acme.email=erik99.rain@gmail.com"
+          - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+
+        ports:
+          - "443:443"
+          - "8080:8080"
+
+        volumes:
+          - "/Docker/traefik/letsencrypt:/letsencrypt"
+          - "/var/run/docker.sock:/var/run/docker.sock"
+
+    - name: Set up GitLab container
+      become: true
+      community.docker.docker_container:
+        image: "gitlab/gitlab-ce:latest"
+        name: "gitlab-ce"
+        restart_policy: "always"
+        recreate: true
+
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.gitlab.rule: "Host(`git.universphere.cloud`)"
+          traefik.http.routers.gitlab.entrypoints: "websecure"
+          traefik.http.routers.gitlab.tls.certresolver: "myresolver"
+
+        env_file: ./.env
+
+        env:
+          GITLAB_OMNIBUS_CONFIG: |
+            external_url 'https://git.universphere.cloud'
+
+            # GitLab with external proxy requires to disable auto redirect
+            nginx['listen_port'] = 80
+            nginx['listen_https'] = false
+
+            # DB
+            gitlab_rails['db_adapter'] = "postgresql"
+            gitlab_rails['db_database'] = "gitlab"
+            gitlab_rails['db_username'] = "postgres"
+            gitlab_rails['db_password'] = "${DATABASE_PASSWORD}"
+            gitlab_rails['db_host'] = "gitlab_database"
+
+            # Disable username password login
+            # According to https://stackoverflow.com/questions/26618030/gitlab-disable-regular-username-password-login-and-only-allow-omniauth-login this will not work
+            # In newer GitLab versions this is only possible using the admin ui in GitLab iteself
+            gitlab_rails['gitlab_signin_enabled'] = false
+
+            # OIDC
+            gitlab_rails['omniauth_providers'] = [
+                    {
+                      name: "openid_connect",
+                      label: "Keycloak",
+                      args: {
+                        name: "openid_connect",
+                        scope: ["openid", "profile", "email"],
+                        response_type: "code",
+                        issuer: "https://keycloak.universphere.cloud",
+                        client_auth_method: "query",
+                        discovery: true,
+                        uid_field: "preferred_username",
+                        pkce: true,
+                        client_options: {
+                          identifier: "<YOUR PROJECT CLIENT ID>",
+                          secret: "<YOUR PROJECT CLIENT SECRET>",
+                          redirect_uri: "https://git.universphere.cloud/users/auth/openid_connect/callback",
+                        }
+                      }
+                    }
+                  ]
+
+        volumes:
+          - /Docker/gitlab/config:/etc/gitlab
+          - /Docker/gitlab/logs:/var/log/gitlab
+          - /Docker/gitlab/data:/var/opt/gitlab
+
