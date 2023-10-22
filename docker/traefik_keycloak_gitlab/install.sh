@@ -12,7 +12,7 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # Create directory structure
-mkdir -p /Docker/treafik/letsencrypt
+mkdir -p /Docker/traefik/letsencrypt
 mkdir -p /Docker/gitlab/config
 mkdir -p /Docker/gitlab/data
 mkdir -p /Docker/gitlab/logs
@@ -40,8 +40,8 @@ services:
       - "--certificatesresolvers.myresolver.acme.email=erik99.rain@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
+      - "80:80"
       - "443:443"
-      - "8080:8080"
     volumes:
       - "/Docker/traefik/letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock"
@@ -93,8 +93,8 @@ services:
                      uid_field: "preferred_username",
                      pkce: true,
                      client_options: {
-                       identifier: "<YOUR PROJECT CLIENT ID>",
-                       secret: "<YOUR PROJECT CLIENT SECRET>",
+                       identifier: "${OIDC_CLIENT_ID}",
+                       secret: "${OIDC_CLIENT_SECRET}",
                        redirect_uri: "https://git.universphere.cloud/users/auth/openid_connect/callback",
                      }
                    }
