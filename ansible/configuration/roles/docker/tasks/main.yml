@@ -56,7 +56,7 @@
     daemon_reload: yes
     state: restarted
 
-- name: Add vagrant user to docker group
+- name: "Add {{ ansible_user }} user to docker group"
   become: true
   user:
     name: "{{ ansible_user }}"
