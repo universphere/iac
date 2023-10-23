@@ -1,0 +1,7 @@
+- hosts: tkg
+  roles:
+    - directory_structure
+    - docker_networks
+    - traefik
+    - keycloak
+    - gitlab

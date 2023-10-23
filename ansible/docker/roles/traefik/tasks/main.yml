@@ -1,0 +1,34 @@
+- name: ensure Traefik volumes are present
+  become: true
+  file:
+    path: "{{ traefik_volume_letsencrypt }}"
+    state: directory
+    recurse: yes
+
+- name: "restart: {{ restart }} and recreate: {{ recreate }} Traefik"
+  community.docker.docker_container:
+    name: traefik
+    image: traefik:v2.10
+    state: started
+    restart: "{{ restart }}" # Force restart
+    recreate: "{{ recreate }}" # Force recreate
+    restart_policy: "always"
+    ports:
+      - "80:80"
+      - "443:443"
+    command:
+      - "--providers.docker=true"
+      # Allow both entrypoints 80 and 443 but always redirect to 443
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      # Letsencrypt; TODO: Set correct E-Mail later
+      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.email=erik99.rain@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    networks:
+      - name: "{{ gitlab_network }}"
+    volumes:
+      - "{{ traefik_volume_letsencrypt }}:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock"

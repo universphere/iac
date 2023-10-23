@@ -1,0 +1,6 @@
+- name: create a network
+  community.docker.docker_network:
+    name: "{{ item }}"
+  loop:
+    - "{{ gitlab_network }}"
+    - "{{ keycloak_network }}"
