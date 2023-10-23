@@ -1,11 +1,35 @@
 - name: Create and set up the the container infrastructure
-  hosts: all
+  hosts: server
   remote_user: k8s 
 
   # use this as alternative when using it locally  
   # hosts: localhost
   # connection: local
   tasks:
+    - name: Ensure GitLab volumes are present
+      become: true
+      file: 
+        path: /Docker/gitlab/{{item}}
+        state: directory
+        recurse: yes
+      loop:
+        - config
+        - logs
+        - data
+
+    - name: Ensure traefik volumes are present
+      become: true
+      file: 
+        path: /Docker/traefik/letsencrypt
+        state: directory
+        recurse: yes
+    
+    - name: Set up docker networks
+      become: true
+      shell: docker network inspect gitlab-network >/dev/null 2>&1 || docker network create -d bridge gitlab-network
+      args:
+        executable: /bin/zsh
+
     - name: Set up traefik container
       become: true
       community.docker.docker_container:
@@ -23,17 +47,20 @@
           - "--entrypoints.websecure.address=:443"
           # Letsencrypt; TODO: Set correct E-Mail later
           - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-          - "--certificatesresolvers.myresolver.acme.email=<your-email>"
+          - "--certificatesresolvers.myresolver.acme.email=${EMAIL}"
           - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
 
         ports:
           - "443:443"
-          - "8080:8080"
+          - "80:80"
 
         volumes:
           - "/Docker/traefik/letsencrypt:/letsencrypt"
           - "/var/run/docker.sock:/var/run/docker.sock"
 
+        networks:
+          - name: "gitlab-network"
+          
     - name: Set up GitLab container
       become: true
       community.docker.docker_container:
@@ -85,8 +112,8 @@
                         uid_field: "preferred_username",
                         pkce: true,
                         client_options: {
-                          identifier: "<YOUR PROJECT CLIENT ID>",
-                          secret: "<YOUR PROJECT CLIENT SECRET>",
+                          identifier: "${IDENTIFIER}",
+                          secret: "${SECRET}",
                           redirect_uri: "https://git.universphere.cloud/users/auth/openid_connect/callback",
                         }
                       }
@@ -97,4 +124,8 @@
           - /Docker/gitlab/config:/etc/gitlab
           - /Docker/gitlab/logs:/var/log/gitlab
           - /Docker/gitlab/data:/var/opt/gitlab
+
+        networks:
+          - name: "gitlab-network"
+
 
