@@ -1,0 +1,15 @@
+- name: "restart: {{ restart }} and recreate: {{ recreate }} Keycloak"
+  community.docker.docker_container:
+    name: keycloak
+    image: quay.io/keycloak/keycloak
+    state: started
+    restart: "{{ restart }}" # Force restart
+    recreate: "{{ recreate }}" # Force recreate
+    restart_policy: "always"
+    ports:
+      - "8080:8080"
+    env:
+      KEYCLOAK_ADMIN: "admin"
+      KEYCLOAK_ADMIN_PASSWORD: "admin"
+    command:
+      - start-dev
