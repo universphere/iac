@@ -13,6 +13,12 @@ Execute: ```ansible-playbook vm.yml -i inventory.ini```
 
 Execute: ```ansible-playbook vm.yml -i inventory.ini```
 
+## Update SSH Keys
+*Prerequisites:*
+You need to be connected to the VPN, to add and remove keys from the universphere VMs.
+
+Execute: ```ansible-playbook update-ssh-keys.yml -i inventory.ini```
+
 ## Vagrant
 
 *Prerequisites:*
