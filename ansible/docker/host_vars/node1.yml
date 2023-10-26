@@ -1,12 +1,2 @@
-## Traefik
-traefik_volume_letsencrypt: "/Docker/traefik/letsencrypt"
-
-## GitLab
-gitlab_network: "gitlab-network"
-gitlab_volume_config: "/Docker/gitlab/config"
-gitlab_volume_data: "/Docker/gitlab/data"
-gitlab_volume_logs: "/Docker/gitlab/logs"
-
-## Keycloak
-keycloak_network: "keycloak-network"
-keycloak_volume_pg_data: "/Docker/keycloak/pg_data"
+## Nginx
+nginx_volume_config: "/home/k8s/docker/nginx/nginx.conf"
