@@ -1,0 +1,61 @@
+http {
+    upstream kubernetes {
+        server i-k8s-node-3;
+        server i-k8s-node-4;
+        server i-k8s-node-5;
+	}
+
+    server {
+        listen 80
+        server_name git.universphere.cloud;
+
+        location / {
+            proxy_pass http://i-k8s-node-2
+
+            proxy_set_header Upgrade           $http_upgrade;
+            proxy_set_header Connection        "upgrade";
+            proxy_set_header Host              $host;
+            proxy_set_header X-Real-IP         $remote_addr;
+            proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host  $host;
+            proxy_set_header X-Forwarded-Port  $server_port;
+        }
+    }
+	
+    server {
+        listen 80
+        server_name id.universphere.cloud;
+
+        location / {
+            proxy_pass http://i-k8s-node-2
+
+            proxy_set_header Upgrade           $http_upgrade;
+            proxy_set_header Connection        "upgrade";
+            proxy_set_header Host              $host;
+            proxy_set_header X-Real-IP         $remote_addr;
+            proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host  $host;
+            proxy_set_header X-Forwarded-Port  $server_port;
+        }
+    }
+
+    server {
+        listen 80
+        server_name universphere.cloud;
+
+        location / {
+            proxy_pass kubernetes
+
+            proxy_set_header Upgrade           $http_upgrade;
+            proxy_set_header Connection        "upgrade";
+            proxy_set_header Host              $host;
+            proxy_set_header X-Real-IP         $remote_addr;
+            proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host  $host;
+            proxy_set_header X-Forwarded-Port  $server_port;
+        }
+    }
+}
