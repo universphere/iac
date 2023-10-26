@@ -29,6 +29,7 @@
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     networks:
       - name: "{{ gitlab_network }}"
+      - name: "{{ keycloak_network }}"
     volumes:
       - "{{ traefik_volume_letsencrypt }}:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock"
