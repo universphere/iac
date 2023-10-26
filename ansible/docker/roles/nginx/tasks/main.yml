@@ -1,0 +1,19 @@
+- name: copy file nginx.conf
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: "{{ nginx_volume_config }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: "restart: {{ restart }} and recreate: {{ recreate }} nginx"
+  community.docker.docker_container:
+    name: nginx
+    image: nginx:latest
+    state: started
+    restart: "{{ restart }}" # Force restart
+    recreate: "{{ recreate }}" # Force recreate
+    restart_policy: "always"
+    network_mode: host
+    volumes:
+      - "{{ nginx_volume_config }}:/etc/nginx/nginx.conf"
