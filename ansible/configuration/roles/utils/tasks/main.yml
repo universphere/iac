@@ -9,7 +9,6 @@
       - tree
       - htop
       - bat
-      - wget
       - dnsutils
       - python3
     update_cache: yes
