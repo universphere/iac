@@ -41,3 +41,6 @@
 │   └── inventory.ini: Contains all the host configurations
 └── docker-compose: : Contains the dockerized version of the deployed services as docker-compose.yml files
 ```
+
+## Playbooks and their function
+TBD
