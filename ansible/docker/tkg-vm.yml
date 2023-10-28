@@ -1,6 +1,6 @@
 - hosts: tkg
   roles:
-    - directory_structure
+    - directory_structure_tgk
     - docker_networks
     - traefik
     - keycloak

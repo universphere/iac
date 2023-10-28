@@ -1,4 +1,4 @@
-- name: create folder structure for docker containers
+- name: create folder structure for tgk
   become: true
   ansible.builtin.file:
     path: "{{ item }}"

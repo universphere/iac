@@ -1,2 +1,2 @@
 ## Nginx
-nginx_volume_config: "/home/k8s/docker/nginx/nginx.conf"
+nginx_volume: "/home/k8s/docker/nginx"
