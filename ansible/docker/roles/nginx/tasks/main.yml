@@ -1,4 +1,5 @@
 - name: copy file nginx.conf
+  become: true
   ansible.builtin.copy:
     src: nginx.conf
     dest: "{{ nginx_volume }}/nginx.conf"
