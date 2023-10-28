@@ -1,7 +1,7 @@
 - name: copy file nginx.conf
   ansible.builtin.copy:
     src: nginx.conf
-    dest: "{{ nginx_volume_config }}"
+    dest: "{{ nginx_volume }}/nginx.conf"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: '0644'
@@ -16,4 +16,4 @@
     restart_policy: "always"
     network_mode: host
     volumes:
-      - "{{ nginx_volume_config }}:/etc/nginx/nginx.conf"
+      - "{{ nginx_volume }}/nginx.conf:/etc/nginx/nginx.conf"
