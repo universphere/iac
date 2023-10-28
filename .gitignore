@@ -5,3 +5,4 @@
 **/azure-cluster
 *.secret
 *secret*
+*.code-workspace
