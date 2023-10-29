@@ -2,7 +2,7 @@
   become: true
   ansible.builtin.copy:
     src: nginx.conf
-    dest: "{{ nginx_volume }}/nginx.conf"
+    dest: "{{ nginx_volume }}"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: '0644'
