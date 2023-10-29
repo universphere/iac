@@ -15,7 +15,7 @@
 .
 ├── ansible
 │   ├── configuration
-│   │   ├── group_vars: Set group-wide dev
+│   │   ├── group_vars: Set group-wide variables
 │   │   ├── hetzner.yml Roles that should be applied to prod servers
 │   │   ├── README.md: More to read
 │   │   ├── roles
@@ -28,7 +28,6 @@
 │   ├── docker
 │   │   ├── group_vars: Set group-wide variables
 │   │   ├── host_vars: Set host-specific variables
-│   │   ├── loadbalancer-vm.yml: Roles that should be applied to loadbalancer host
 │   │   ├── roles
 │   │   │   ├── directory_structure_loadbalancer: Create the fodler structure for the loadbalancer vm
 │   │   │   ├── directory_structure_tgk: Create the fodler structure for the tgk vm
@@ -37,7 +36,11 @@
 │   │   │   ├── keycloak: Keycloak task that setups keycloak with all needed files
 │   │   │   ├── nginx: Nginx task that setups the loadbalancer with all needed files
 │   │   │   └── traefik: Traefik task that setups traefik with all needed files
+│   │   ├── loadbalancer-vm.yml: Roles that should be applied to loadbalancer host
 │   │   └── tkg-vm.yml_ Roles that should be applied to tgk host
 │   └── inventory.ini: Contains all the host configurations
 └── docker-compose: : Contains the dockerized version of the deployed services as docker-compose.yml files
 ```
+
+## Playbooks and their function
+TBD
