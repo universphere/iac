@@ -2,3 +2,4 @@
 .vscode
 **/.env
 **/.vagrant
+**/azure-cluster
