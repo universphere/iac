@@ -1,2 +1,2 @@
-recreate: false
+recreate: true
 restart: true
