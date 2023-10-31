@@ -1,3 +1,36 @@
+- name: ensure Keycloak volumes are present
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  loop:
+    - "{{ keycloak_volume }}"
+    - "{{ keycloak_volume_pg_data }}"
+
+- name: copy file .env
+  become: true
+  ansible.builtin.copy:
+    src: .env
+    dest: "{{ keycloak_volume }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0600'
+
+- name: install postgres database
+  community.docker.docker_container:
+    name: postgres
+    image: postgres
+    state: started
+    restart: "{{ restart }}" # Force restart
+    recreate: "{{ recreate }}" # Force recreate
+    restart_policy: "always"
+    env_file: "{{keycloak_volume}}/.env"
+    volumes:
+      - "{{ keycloak_volume_pg_data }}:/var/lib/postgresql/data"
+    networks:
+      - name: "{{ keycloak_postgres_network }}"
+
 - name: "restart: {{ restart }} and recreate: {{ recreate }} Keycloak"
   community.docker.docker_container:
     name: keycloak
@@ -6,10 +39,13 @@
     restart: "{{ restart }}" # Force restart
     recreate: "{{ recreate }}" # Force recreate
     restart_policy: "always"
-    ports:
-      - "8080:8080"
-    env:
-      KEYCLOAK_ADMIN: "admin"
-      KEYCLOAK_ADMIN_PASSWORD: "admin"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.gitlab.rule: "Host(`id.universphere.cloud`)"
+      traefik.http.routers.gitlab.entrypoints: "websecure"
+      traefik.http.routers.gitlab.tls.certresolver: "myresolver"
+    env_file: "{{keycloak_volume}}/.env"
+    networks:
+    - name: "{{ keycloak_postgres_network }}"
     command:
-      - start-dev
+      - start –hostname id.universphere.cloud
