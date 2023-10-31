@@ -11,5 +11,6 @@
       - bat
       - dnsutils
       - python3
+      - net-tools
     update_cache: yes
     state: present
