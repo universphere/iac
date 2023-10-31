@@ -11,4 +11,5 @@
     - "{{ gitlab_volume_config }}"
     - "{{ gitlab_volume_data }}"
     - "{{ gitlab_volume_logs }}"
+    - "{{ keycloak_volume }}"
     - "{{ keycloak_volume_pg_data }}"
