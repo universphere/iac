@@ -9,6 +9,15 @@
     - "{{ gitlab_volume_data }}"
     - "{{ gitlab_volume_logs }}"
 
+- name: copy file .env
+  become: true
+  ansible.builtin.copy:
+    src: .env
+    dest: "{{ gitlab_volume }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0600'
+
 - name: "restart: {{ restart }} and recreate: {{ recreate }} GitLab"
   community.docker.docker_container:
     name: gitlab
@@ -18,13 +27,12 @@
     recreate: "{{ recreate }}" # Force recreate
     restart_policy: "always"
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.gitlab.rule=Host(`git.universphere.cloud`)"
-      - "traefik.http.routers.gitlab.entrypoints=websecure"
-      - "traefik.http.routers.gitlab.tls.certresolver=myresolver"
-    env_file:
-      - ./.env
-    environment:
+      traefik.enable: "true"
+      traefik.http.routers.gitlab.rule: "Host(`git.universphere.cloud`)"
+      traefik.http.routers.gitlab.entrypoints: "websecure"
+      traefik.http.routers.gitlab.tls.certresolver: "myresolver"
+    env_file: "{{ gitlab_volume }}/.env"
+    env:
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'https://git.universphere.cloud'
         # GitLab with external proxy requires to disable auto redirect
