@@ -1,11 +1,11 @@
 - name: copy file nginx.conf
   become: true
   ansible.builtin.copy:
-    src: nginx.conf
-    dest: "{{ nginx_volume }}"
+    src: nginx_prod.conf
+    dest: "{{ nginx_volume }}/nginx.conf"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
-    mode: '0644'
+    mode: '0600'
 
 - name: "restart: {{ restart }} and recreate: {{ recreate }} nginx"
   community.docker.docker_container:
