@@ -48,4 +48,4 @@
     networks:
     - name: "{{ keycloak_postgres_network }}"
     command:
-      - start –hostname id.universphere.cloud
+      - start --hostname=id.universphere.cloud
