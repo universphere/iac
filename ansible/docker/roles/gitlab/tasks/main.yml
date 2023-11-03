@@ -75,6 +75,7 @@
                    }
                  }
               ]
+    network_mode: bridge   
     networks:
       - name: "{{ gitlab_network }}"
     volumes:
