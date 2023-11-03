@@ -18,10 +18,11 @@
       - "443:443"
     command:
       - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
       # Allow both entrypoints 80 and 443 but always redirect to 443
       - "--entrypoints.web.address=:80"
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      # - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
       # Letsencrypt; TODO: Set correct E-Mail later
       - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
