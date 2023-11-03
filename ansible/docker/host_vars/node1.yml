@@ -1,2 +1,16 @@
-## Nginx
-nginx_volume: "/home/k8s/docker/nginx"
+## Traefik
+traefik_volume_letsencrypt: "/home/k8s/docker/traefik/letsencrypt"
+
+## GitLab
+gitlab_network: "gitlab-network"
+gitlab_volume: "/home/k8s/docker/gitlab"
+gitlab_volume_config: "/home/k8s/docker/gitlab/config"
+gitlab_volume_data: "/home/k8s/docker/gitlab/data"
+gitlab_volume_logs: "/home/k8s/docker/gitlab/logs"
+
+
+## Keycloak
+keycloak_network: "keycloak-network"
+keycloak_postgres_network: "keycloak-postgres-network"
+keycloak_volume: "/home/k8s/docker/keycloak"
+keycloak_volume_pg_data: "/home/k8s/docker/keycloak/pg_data"
