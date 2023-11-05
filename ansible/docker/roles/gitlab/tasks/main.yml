@@ -65,6 +65,11 @@
                        identifier: "${OIDC_CLIENT_ID}",
                        secret: "${OIDC_CLIENT_SECRET}",
                        redirect_uri: "https://git.universphere.cloud/users/auth/openid_connect/callback",
+                       gitlab: {
+                        groups_attributes: "groups",
+                        required_groups: ["User"],
+                        admin_groups: ["Admin"],
+                       }
                      }
                    }
                  }
