@@ -3,6 +3,5 @@
     name: "{{ item }}"
     state: present
   loop:
-    - "{{ gitlab_network }}"
-    - "{{ keycloak_network }}"
-    - "{{ keycloak_postgres_network }}"
+    - "{{ proxy_network }}"
+    - "{{ keycloak_db_network }}"

@@ -18,21 +18,22 @@
       - "443:443"
     command:
       - "--providers.docker=true"
+      # Only expose container that have traefik.enable=true
       - "--providers.docker.exposedbydefault=false"
-      # Allow both entrypoints 80 and 443 but always redirect to 443
+      # Allow both entrypoints 80 and 443 
       - "--entrypoints.web.address=:80"
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      # - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
       # Letsencrypt; TODO: Set correct E-Mail later
       - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=websecure"
-      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.myresolver.acme.email=erik99.rain@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      # Use this for debugging purposes only 
+      # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+    network_mode: bridge   
     networks:
-      - name: "{{ gitlab_network }}"
-      - name: "{{ keycloak_network }}"
+      - name: "{{ proxy_network }}"
     volumes:
       - "{{ traefik_volume_letsencrypt }}:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock"

@@ -31,29 +31,23 @@
       traefik.http.routers.gitlab.rule: "Host(`git.universphere.cloud`)"
       traefik.http.routers.gitlab.entrypoints: "websecure"
       traefik.http.routers.gitlab.tls.certresolver: "myresolver"
+      traefik.http.routers.gitlab.tls: "true"
+      traefik.http.services.gitlab.loadbalancer.server.port: 80
+    etc_hosts: >
+      {
+        "id.universphere.cloud": "10.10.240.14"
+      }
     env_file: "{{ gitlab_volume }}/.env"
     env:
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'https://git.universphere.cloud'
         # GitLab with external proxy requires to disable auto redirect
-        # https://medium.com/@gustitammam/how-to-install-self-managed-gitlab-with-nginx-reverse-proxy-and-lets-encrypt-ssl-in-ubuntu-20-04-4f7a1e87c857
-        # https://janl1.de/gitlab-ce-mit-registry-und-traefik-2-0-reverse-proxy/
         nginx['listen_port'] = 80
         nginx['listen_https'] = false
         
-        # DB
-        gitlab_rails['db_adapter'] = "postgresql"
-        gitlab_rails['db_database'] = "gitlab"
-        gitlab_rails['db_username'] = "postgres"
-        gitlab_rails['db_password'] = "${DATABASE_PASSWORD}"
-        gitlab_rails['db_host'] = "gitlab_database"
-        
-        # Disable username password login
-        # According to https://stackoverflow.com/questions/26618030/gitlab-disable-regular-username-password-login-and-only-allow-omniauth-login this will not work
-        # In newer GitLab versions this is only possible using the admin ui in GitLab iteself
-        gitlab_rails['gitlab_signin_enabled'] = false
-        
         # OIDC
+        gitlab_rails['omniauth_allow_single_sign_on'] = ['openid_connect']
+        gitlab_rails['omniauth_block_auto_created_users'] = false
         gitlab_rails['omniauth_providers'] = [
                  {
                    name: "openid_connect",
@@ -62,7 +56,7 @@
                      name: "openid_connect",
                      scope: ["openid", "profile", "email"],
                      response_type: "code",
-                     issuer: "https://keycloak.universphere.cloud",
+                     issuer: "https://id.universphere.cloud/realms/master",
                      client_auth_method: "query",
                      discovery: true,
                      uid_field: "preferred_username",
@@ -77,7 +71,7 @@
               ]
     network_mode: bridge   
     networks:
-      - name: "{{ gitlab_network }}"
+      - name: "{{ proxy_network }}"
     volumes:
       - "{{ gitlab_volume_config }}:/etc/gitlab"
       - "{{ gitlab_volume_data }}:/var/opt/gitlab"
