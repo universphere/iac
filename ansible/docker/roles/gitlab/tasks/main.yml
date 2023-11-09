@@ -32,11 +32,7 @@
       traefik.http.routers.gitlab.entrypoints: "websecure"
       traefik.http.routers.gitlab.tls.certresolver: "myresolver"
       traefik.http.routers.gitlab.tls: "true"
-      traefik.http.services.gitlab.loadbalancer.server.port: 80
-    etc_hosts: >
-      {
-        "id.universphere.cloud": "10.10.240.14"
-      }
+      traefik.http.services.gitlab.loadbalancer.server.port: "80"
     env_file: "{{ gitlab_volume }}/.env"
     env:
       GITLAB_OMNIBUS_CONFIG: |

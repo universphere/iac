@@ -28,6 +28,7 @@
     env_file: "{{keycloak_volume}}/.env"
     volumes:
       - "{{ keycloak_volume_pg_data }}:/var/lib/postgresql/data"
+    network_mode: bridge  
     networks:
       - name: "{{ keycloak_db_network }}"
 
@@ -45,7 +46,7 @@
       traefik.http.routers.gitlab.entrypoints: "websecure"
       traefik.http.routers.gitlab.tls.certresolver: "myresolver"
       traefik.http.routers.keycloak.tls: "true"
-      traefik.http.services.keycloak.loadbalancer.server.port: 8080
+      traefik.http.services.keycloak.loadbalancer.server.port: "8080"
     env_file: "{{keycloak_volume}}/.env"
     network_mode: bridge   
     networks:
