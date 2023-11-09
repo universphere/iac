@@ -48,6 +48,15 @@
       - docker-buildx-plugin
       - docker-compose-plugin
     update_cache: yes
+  
+- name: change default docker network ip range
+  become: true
+  ansible.builtin.copy:
+    src:  daemon.json
+    dest: /etc/docker/daemon.json
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
 
 - name: restart containerd
   become: true
@@ -56,8 +65,16 @@
     daemon_reload: yes
     state: restarted
 
+- name: restart docker
+  become: true
+  service:
+    name: docker
+    daemon_reload: yes
+    state: restarted
+
 - name: "Add {{ ansible_user }} user to docker group"
   become: true
   user:
     name: "{{ ansible_user }}"
     group: docker
+  
