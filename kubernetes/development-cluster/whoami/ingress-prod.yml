@@ -6,13 +6,13 @@ metadata:
     cert-manager.io/cluster-issuer: prod-issuer
   name: whoami-ingresss
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
     - host: dev.universphere.cloud
       http:
         paths:
           - pathType: Prefix
-            path: /
+            path: /whoami
             backend:
               service:
                 name: whoami
