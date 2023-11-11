@@ -1,0 +1,25 @@
+users:
+  - username: foobar
+    firstName: foo
+    lastName: bar
+    email: foo@bar.com
+    groups:
+      - first
+      - second
+  - username: zigzag
+    firstName: zig
+    lastName: zag
+    email: zig@zag.com
+    groups:
+      - third
+
+users_to_delete:
+  - username: zigzag
+
+users_to_change_groups:
+  - username: foobar
+    addGroups:
+      - first
+      - second
+    removeGroups:
+      - third
