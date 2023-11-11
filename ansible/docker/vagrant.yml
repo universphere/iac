@@ -3,5 +3,5 @@
     - directory_structure
     - docker_networks
     - traefik
-    - keycloak
+    - { role: keycloak/docker_installation, tags: docker_installation }
     - gitlab
