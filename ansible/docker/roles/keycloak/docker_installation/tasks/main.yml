@@ -20,6 +20,7 @@
 - name: install postgres database
   community.docker.docker_container:
     name: postgres
+    hostname: postgres
     image: postgres
     state: started
     restart: "{{ restart }}" # Force restart
@@ -35,6 +36,7 @@
 - name: "restart: {{ restart }} and recreate: {{ recreate }} Keycloak"
   community.docker.docker_container:
     name: keycloak
+    hostname: keycloak
     image: quay.io/keycloak/keycloak
     state: started
     restart: "{{ restart }}" # Force restart
@@ -42,9 +44,9 @@
     restart_policy: "always"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.gitlab.rule: "Host(`id.universphere.cloud`)"
-      traefik.http.routers.gitlab.entrypoints: "websecure"
-      traefik.http.routers.gitlab.tls.certresolver: "myresolver"
+      traefik.http.routers.keycloak.rule: "Host(`id.universphere.cloud`)"
+      traefik.http.routers.keycloak.entrypoints: "websecure"
+      traefik.http.routers.keycloak.tls.certresolver: "myresolver"
       traefik.http.routers.keycloak.tls: "true"
       traefik.http.services.keycloak.loadbalancer.server.port: "8080"
     env_file: "{{keycloak_volume}}/.env"
