@@ -133,11 +133,12 @@ console:
     enabled: false
     ingressClassName: "traefik"
     labels: { }
-    annotations: {
+    annotations:
       cert-manager.io/cluster-issuer: prod-issuer
-    }
+      # Naming convention: <namespace>-<middleware-name>@kubernetescrd
+      traefik.ingress.kubernetes.io/router.middlewares: minio-operator-minio-console@kubernetescrd
     host: dev.universphere.cloud
-    path: /minio
+    path: /
     pathType: Prefix
     tls: 
       - hosts:
