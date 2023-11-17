@@ -4,60 +4,51 @@
     auth_username: "{{ auth_username }}"
     auth_password: "{{ auth_password }}"
     auth_realm: "{{ realm }}"
-    name: my-new_clientscope
-    description: description-of-clientscope
-    protocol: openid-connect
+    name: "{{ item[0].name }}"
+    description: "{{ item[0].description }}"
+    protocol: "{{ item[0].protocol }}"
     protocol_mappers:
-      - config:
-          access.token.claim: true
-          claim.name: "policy"
-          id.token.claim: true
-          jsonType.label: String
-          user.attribute: policy
-          userinfo.token.claim: true
-          multivalued: true
-          aggregate.attrs: true
-        name: minio-policy-mapper
-        protocol: openid-connect
-        protocolMapper: oidc-usermodel-property-mapper
+      - config: "{{ item[1].config }}"
+        name: "{{ item[1].name }}"
+        protocol: "{{ item[1].protocol }}"
+        protocolMapper: "{{ item[1].protocolMapper }}"
+    state: present
+  loop: "{{ client_scopes | subelements('protocol_mappers') }}"
 
-- name: Create or update a Keycloak client (with all the bells and whistles)
+- name: Create or update a Keycloak client (with all the bells and whistles
+  vars:
+    seed: "{{ inventory_hostname }}{{ item.client_id }}{{ salt }}"
+    client_scopes: "{{ ['email', 'profile', 'roles'] + item.default_client_scopes }}"
   community.general.keycloak_client:
     auth_keycloak_url: "{{ auth_keycloak_url }}"
     auth_username: "{{ auth_username }}"
     auth_password: "{{ auth_password }}"
     auth_realm: "{{ realm }}"
-    state: present
-    client_id: miniofoo
-    name: test-name
-    description: This is the universphere minio client
-    root_url: https://www.example.com/
-    admin_url: https://www.example.com/admin_url
-    enabled: true
-    bearerOnly: false
-    client_authenticator_type: client-secret
-    secret: REALLYWELLKEPTSECRET
-    redirect_uris:
-      - https://www.example.com/*
-      - http://localhost:8888/
-    web_origins:
-      - https://www.example.com/*
-    standard_flow_enabled: true
-    implicit_flow_enabled: false
-    direct_access_grants_enabled: true
-    service_accounts_enabled: true
-    authorization_services_enabled: true
-    public_client: false
-    frontchannel_logout: true
-    protocol: openid-connect
-    default_client_scopes:
-      - email
-      - profile
-      - roles
-      - my-new_clientscope
+    client_id: "{{ item.client_id }}"
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    root_url: "{{ item.root_url }}"
+    admin_url: "{{ item.admin_url }}"
+    enabled: "{{ item.enabled }}"
+    bearerOnly: "{{ item.bearerOnly }}"
+    client_authenticator_type: "{{ item.client_authenticator_type }}"
+    secret: "{{ lookup('ansible.builtin.password', 'credentials/oidc_secrets/' + item.client_id, length=32, chars=['ascii_letters'], seed=seed) }}"
+    redirect_uris: "{{ item.redirect_uris }}"
+    web_origins: "{{ item.web_origins }}"
+    standard_flow_enabled: "{{ item.standard_flow_enabled }}"
+    implicit_flow_enabled: "{{ item.implicit_flow_enabled }}"
+    direct_access_grants_enabled: "{{ item.direct_access_grants_enabled }}"
+    service_accounts_enabled: "{{ item.service_accounts_enabled }}"
+    authorization_services_enabled: "{{ item.authorization_services_enabled }}"
+    public_client: "{{ item.public_client }}"
+    frontchannel_logout: "{{ item.frontchannel_logout }}"
+    protocol: "{{ item.protocol }}"
+    default_client_scopes: "{{ client_scopes }}"
     optional_client_scopes:
       - acr
       - address
       - microprofile-jwt
       - offline_access
       - phone
+    state: present
+  loop: "{{ clients }}"
