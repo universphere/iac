@@ -6,3 +6,4 @@
 *.secret
 *secret*
 *.code-workspace
+**/credentials
