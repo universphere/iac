@@ -4,6 +4,7 @@
     auth_username: "{{ admin_username }}"
     auth_password: "{{ admin_password }}"
     auth_realm: "{{ realm }}"
-    name: "{{ item }}"
-    attributes: "{{ attributes }}"
+    name: "{{ item.name }}"
+    attributes: "{{ item.attributes }}"
+    state: present
   loop: "{{ roles }}"
