@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor-volume-tenant
+  namespace: harbor
+
+spec:
+  storageClassName: minio-sc-tenant
+  capacity: 
+    storage: 25Gi
+  accessModes: 
+    - ReadWriteOnce
+  local:
+    path: "/mnt/harbor-tenant"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values: # Currently on working in single-node mode and not the distributed mode
+          - node2
