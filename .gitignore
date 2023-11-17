@@ -3,3 +3,4 @@
 **/.env
 **/.vagrant
 *.code-workspace
+**/credentials
