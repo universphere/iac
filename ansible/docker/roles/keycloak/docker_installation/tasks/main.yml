@@ -16,8 +16,8 @@
       POSTGRES_DB={{ postgres_db }}
       POSTGRES_USER={{ postgres_user }}
       POSTGRES_PASSWORD={{ postgres_password }}
-      KEYCLOAK_ADMIN={{ kc_admin }}
-      KEYCLOAK_ADMIN_PASSWORD={{ kc_admin_password }}
+      KEYCLOAK_ADMIN={{ admin_username }}
+      KEYCLOAK_ADMIN_PASSWORD={{ admin_password }}
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: '0600'
