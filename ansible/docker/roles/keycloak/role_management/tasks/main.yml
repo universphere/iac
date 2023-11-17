@@ -5,13 +5,5 @@
     auth_password: "{{ auth_password }}"
     auth_realm: "{{ realm }}"
     name: "{{ item }}"
-    attributes:
-      attrib1: value1
-      attrib2: value2
-      attrib3:
-        - with
-        - numerous
-        - individual
-        - list
-        - items
+    attributes: "{{ attributes }}"
   loop: "{{ roles }}"
