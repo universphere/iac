@@ -1,0 +1,7 @@
+postgres_host: keycloak-db
+postgres_db: keycloak
+postgres_user: keycloak
+postgres_password: password
+
+kc_admin: admin
+kc_admin_password: password
