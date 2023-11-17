@@ -3,3 +3,5 @@
 **/.env
 **/.vagrant
 **/azure-cluster
+*.secret
+*secret*

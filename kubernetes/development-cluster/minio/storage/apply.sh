@@ -1,4 +1,5 @@
-kubectl apply -f minio-volume.yml -n minio-operator
-kubectl apply -f minio-pvc.yml -n minio-operator
+kubectl apply -f ./storage/storageclass.yml
+kubectl apply -f ./storage/volume.yml
+kubectl apply -f ./storage/pvc.yml 
 
 echo "done!"
