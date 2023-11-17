@@ -2,6 +2,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: minio-volume
+  namespace: minio-operator
   labels: 
     type: local
 spec:
@@ -20,4 +21,29 @@ spec:
           operator: In
           values:
           - node2
-          - node3
+          - node
+          
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: minio-volume-tenant
+  namespace: minio-tenant
+
+spec:
+  storageClassName: minio-sc-tenant
+  capacity: 
+    storage: 25Gi
+  accessModes: 
+    - ReadWriteOnce
+  local:
+    path: "/mnt/minio-tenant"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values: # Currently on working in single-node mode and not the distributed mode
+          - node2
+          # - node3
