@@ -19,6 +19,8 @@
     mode: '0600'
 
 - name: "restart: {{ restart }} and recreate: {{ recreate }} GitLab"
+  vars:
+    secret: "{{ lookup('ansible.builtin.file', 'credentials/oidc_secrets/gitlab') }}"
   community.docker.docker_container:
     name: gitlab
     image: gitlab/gitlab-ce:latest
@@ -58,8 +60,8 @@
                      uid_field: "preferred_username",
                      pkce: true,
                      client_options: {
-                       identifier: "${OIDC_CLIENT_ID}",
-                       secret: "${OIDC_CLIENT_SECRET}",
+                       identifier: "gitlab",
+                       secret: "{{ secret }}",
                        redirect_uri: "https://git.universphere.cloud/users/auth/openid_connect/callback",
                        gitlab: {
                         groups_attributes: "groups",
