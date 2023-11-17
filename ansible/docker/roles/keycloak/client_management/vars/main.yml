@@ -1,0 +1,43 @@
+clients:
+  - name: gitlab
+    client_id: gitlab
+    description: this is the gitlab client for universphere
+    root_url: https://www.example.com/
+    admin_url: https://www.example.com/admin_url
+    enabled: true
+    bearerOnly: false
+    client_authenticator_type: client-secret
+    redirect_uris:
+      - https://www.example.com/*
+      - http://localhost:8888/
+    web_origins:
+      - https://www.example.com/*
+    standard_flow_enabled: true
+    implicit_flow_enabled: false
+    direct_access_grants_enabled: true
+    service_accounts_enabled: true
+    authorization_services_enabled: true
+    public_client: false
+    frontchannel_logout: true
+    protocol: openid-connect
+    default_client_scopes:
+      - my-new_clientscope
+
+client_scopes:
+  - name: my-new_clientscope
+    description: my new clientscope
+    protocol: openid-connect
+    protocol_mappers:
+      - config:
+          access.token.claim: true
+          claim.name: "policy"
+          id.token.claim: true
+          jsonType.label: String
+          user.attribute: policy
+          userinfo.token.claim: true
+          multivalued: true
+          aggregate.attrs: true
+        name: minio-policy-mapper
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-property-mapper
+
