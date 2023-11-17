@@ -167,6 +167,22 @@ ipFamily:
   ipv4:
     enabled: true
 
+
+# TODO: Investigate if it is needed
+storage_service:
+#   # ca_bundle is the path to the custom root ca certificate, which will be injected into the truststore
+#   # of registry's and chart repository's containers.  This is usually needed when the user hosts a internal storage with self signed certificate.
+#   ca_bundle:
+  s3:
+    region: eu-west-1
+    bucket: harbor
+    accesskey: minio
+    secretkey: minio123
+    regionendpoint: https://dev.universphere.cloud/minio
+    secure: false
+    multipartcopythresholdsize: "5368709120"
+    v4auth: true
+
 # The persistence is enabled by default and a default StorageClass
 # is needed in the k8s cluster to provision volumes dynamically.
 # Specify another StorageClass in the "storageClass" or set "existingClaim"
@@ -191,7 +207,7 @@ persistence:
       # Set it to "-" to disable dynamic provisioning
       storageClass: ""
       subPath: ""
-      accessMode: ReadWriteOnce
+      accessMode: ReadWriteMany
       size: 5Gi
       annotations: {}
     jobservice:
@@ -199,7 +215,7 @@ persistence:
         existingClaim: ""
         storageClass: ""
         subPath: ""
-        accessMode: ReadWriteOnce
+        accessMode: ReadWriteMany
         size: 1Gi
         annotations: {}
     # If external database is used, the following settings for database will
@@ -208,7 +224,7 @@ persistence:
       existingClaim: ""
       storageClass: ""
       subPath: ""
-      accessMode: ReadWriteOnce
+      accessMode: ReadWriteMany
       size: 1Gi
       annotations: {}
     # If external Redis is used, the following settings for Redis will
@@ -217,14 +233,14 @@ persistence:
       existingClaim: ""
       storageClass: ""
       subPath: ""
-      accessMode: ReadWriteOnce
+      accessMode: ReadWriteMany
       size: 1Gi
       annotations: {}
     trivy:
       existingClaim: ""
       storageClass: ""
       subPath: ""
-      accessMode: ReadWriteOnce
+      accessMode: ReadWriteMany
       size: 5Gi
       annotations: {}
   # Define which storage backend is used for registry to store
@@ -270,11 +286,11 @@ persistence:
     s3:
       # Set an existing secret for S3 accesskey and secretkey
       # keys in the secret should be REGISTRY_STORAGE_S3_ACCESSKEY and REGISTRY_STORAGE_S3_SECRETKEY for registry
-      #existingSecret: ""
-      region: us-west-1
-      bucket: bucketname
-      #accesskey: awsaccesskey
-      #secretkey: awssecretkey
+      existingSecret: "env-harbor-tenant"
+      region: eu-west
+      bucket: harbor
+      accesskey: minio
+      secretkey: minio123
       #regionendpoint: http://myobjects.local
       #encrypt: false
       #keyid: mykeyid
@@ -283,7 +299,7 @@ persistence:
       #v4auth: true
       #chunksize: "5242880"
       #rootdirectory: /s3/object/name/prefix
-      #storageclass: STANDARD
+      storageclass: minio-sc-tenant
       #multipartcopychunksize: "33554432"
       #multipartcopymaxconcurrency: 100
       #multipartcopythresholdsize: "33554432"
@@ -338,7 +354,7 @@ logLevel: info
 # or give an existing secret for it
 # key in secret is given via (default to HARBOR_ADMIN_PASSWORD)
 # existingSecretAdminPassword:
-existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
+# existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
 harborAdminPassword: "KubernetesHaborAdminSheiRocks"
 
 # The name of the secret which contains key named "ca.crt". Setting this enables the
