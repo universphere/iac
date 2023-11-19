@@ -1,22 +1,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: prod-issuer
   name: helloworld-ingress
-  annotations: 
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
-  tls:
-    - secretName: helloworld.info-tls
-      hosts:
-        - helloworld.info
+  ingressClassName: traefik
   rules:
-  - host: helloworld.info
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: helloworld-service
-            port:
-              number: 80
+    - host: dev.universphere.cloud
+      http:
+        paths:
+          - pathType: Prefix
+            path: /helloworld
+            backend:
+              service:
+                name: helloworld
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - dev.universphere.cloud
+      secretName: universphere-prod-tls
+
