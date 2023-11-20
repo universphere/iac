@@ -27,3 +27,20 @@ helm install harbor harbor/harbor -n harbor --values ./values-<prod/staging>.yam
 
 ### Official Documentation
 https://goharbor.io
+
+
+### How-to-Harbor
+1. Go to `harbor.universphere.cloud`
+2. Login with keycloak
+    * username: test.user
+    * password: test.user
+3. Create new project
+4. Click on profile (the user name upper right corner)
+5. Copy the token 
+6. Create a docker container with a tag 
+`docker tag SOURCE_IMAGE[:TAG] harbor.universphere.cloud/[:projectname]/REPOSITORY[:TAG]`
+7. Push container to registry
+`docker push harbor.universphere.cloud/[:projectname]/REPOSITORY[:TAG]`
+ * When asking for username and password:
+ * username: test.user
+ * password: click on profile (username upper right corner in harbor and copy the token) paste the token in 
