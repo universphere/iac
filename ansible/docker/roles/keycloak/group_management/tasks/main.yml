@@ -5,4 +5,4 @@
     auth_password: "{{ admin_password }}"
     auth_realm: "{{ realm }}"
     name: "{{ item }}"
-  loop: "{{ groups }}"
+  loop: "{{ keycloak_groups }}"
