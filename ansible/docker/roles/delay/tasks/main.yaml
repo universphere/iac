@@ -1,0 +1,3 @@
+- name: pause for 1 minutes to wait for keycloak startup
+  ansible.builtin.pause:
+    minutes: 1
