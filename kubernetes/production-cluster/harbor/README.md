@@ -30,6 +30,7 @@ https://goharbor.io
 
 
 ### How-to-Harbor
+#### Push 
 1. Go to `harbor.universphere.cloud`
 2. Login with keycloak
     * username: test.user
@@ -44,3 +45,12 @@ https://goharbor.io
  * When asking for username and password:
  * username: test.user
  * password: click on profile (username upper right corner in harbor and copy the token) paste the token in 
+
+ #### Pulling
+1. Go to projects 
+2. Select the corresponding  project name
+3. Select image
+4. Select image again 
+5. Click on Copy Pull Command
+6. Copy Command
+7. Use the command in the cli
