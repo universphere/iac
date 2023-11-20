@@ -59,4 +59,4 @@ client_scopes:
           aggregate.attrs: true
         name: harbor-groups-mapper
         protocol: openid-connect
-        protocolMapper: oidc-usermodel-property-mapper
+        protocolMapper: oidc-usermodel-attribute-mapper
