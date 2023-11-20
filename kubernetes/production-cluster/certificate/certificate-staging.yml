@@ -20,6 +20,7 @@ spec:
     rotationPolicy: Always
   dnsNames:
     - universphere.cloud
+    - harbor.universphere.cloud
   # Issuer references are always required.
   issuerRef:
     name: staging-issuer
