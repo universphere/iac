@@ -22,6 +22,28 @@ clients:
     default_client_scopes:
       - my-new_clientscope
 
+  - name: harbor
+    client_id: harbor
+    description: this is the harbor client for universphere
+    root_url: https://harbor.universphere.cloud/
+    admin_url: ""
+    enabled: true
+    bearerOnly: false
+    client_authenticator_type: client-secret
+    redirect_uris:
+      - https://harbor.universphere.cloud/*
+    web_origins: [ ]
+    standard_flow_enabled: true
+    implicit_flow_enabled: false
+    direct_access_grants_enabled: true
+    service_accounts_enabled: true
+    authorization_services_enabled: true
+    public_client: false
+    frontchannel_logout: true
+    protocol: openid-connect
+    default_client_scopes:
+      - harbor
+
 client_scopes:
   - name: my-new_clientscope
     description: my new clientscope
@@ -37,5 +59,21 @@ client_scopes:
           multivalued: true
           aggregate.attrs: true
         name: minio-policy-mapper
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-property-mapper
+  - name: harbor
+    description: this is the client scope for the harbor oidc integration
+    protocol: openid-connect
+    protocol_mappers:
+      - config:
+          access.token.claim: true
+          claim.name: "groups"
+          id.token.claim: true
+          jsonType.label: String
+          user.attribute: groups
+          userinfo.token.claim: true
+          multivalued: true
+          aggregate.attrs: true
+        name: harbor-groups-mapper
         protocol: openid-connect
         protocolMapper: oidc-usermodel-property-mapper
