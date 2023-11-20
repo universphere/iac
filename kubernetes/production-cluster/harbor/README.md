@@ -11,6 +11,11 @@ You need to create a valid certificate with cert-manager. The configuration of t
 Make sure to set the corresponding `secretName` in the `values.yaml`
 
 #### 2. Persistent Volume
+Make sure all paths are available on the machine and run the corresponding ansible script
+path: `ansible/kubernetes/directory_structure_harbor`
+
+then
+
 ```bash
 kubectl apply -f pv.yml
 ```
