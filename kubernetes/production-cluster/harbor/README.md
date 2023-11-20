@@ -10,8 +10,15 @@ Add the repository with:
 You need to create a valid certificate with cert-manager. The configuration of this certificate will be done with the `../certifictate/certificate.yml` file.
 Make sure to set the corresponding `secretName` in the `values.yaml`
 
-#### 2. Helm install
-```helm install harbor harbor/harbor -n harbor --values ./values-<prod/staging>.yaml```
+#### 2. Persistent Volume
+```bash
+kubectl apply -f pv.yml
+```
+
+#### 3. Helm install
+```bash
+helm install harbor harbor/harbor -n harbor --values ./values-<prod/staging>.yaml
+```
 
 ### Official Documentation
 https://goharbor.io
