@@ -1,0 +1,14 @@
+- name: create folder structure for harbor
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ k8s }}"
+    group: "{{ k8s }}"
+    state: directory
+    mode: '0700'
+  loop:
+    - "/mnt/harbor/registry"
+    - "/mnt/harbor/redis"
+    - "/mnt/harbor/trivy"
+    - "/mnt/harbor/db"
+    - "/mnt/harbor/jobservice"
