@@ -2,16 +2,15 @@ clients:
   - name: gitlab
     client_id: gitlab
     description: this is the gitlab client for universphere
-    root_url: https://www.example.com/
-    admin_url: https://www.example.com/admin_url
+    root_url: https://git.universphere.cloud/
+    admin_url: ""
     enabled: true
     bearerOnly: false
     client_authenticator_type: client-secret
     redirect_uris:
-      - https://www.example.com/*
-      - http://localhost:8888/
+      - https://git.universphere.cloud/users/auth/openid_connect/callback
     web_origins:
-      - https://www.example.com/*
+      - ""
     standard_flow_enabled: true
     implicit_flow_enabled: false
     direct_access_grants_enabled: true
@@ -40,4 +39,3 @@ client_scopes:
         name: minio-policy-mapper
         protocol: openid-connect
         protocolMapper: oidc-usermodel-property-mapper
-
