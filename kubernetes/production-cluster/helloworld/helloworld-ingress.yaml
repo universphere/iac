@@ -19,6 +19,6 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - dev.universphere.cloud
+        - universphere.cloud
       secretName: universphere-prod-tls
 
