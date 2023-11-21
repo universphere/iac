@@ -1,0 +1,10 @@
+- name: create roles
+  community.general.keycloak_role:
+    auth_keycloak_url: "{{ auth_keycloak_url }}"
+    auth_username: "{{ admin_username }}"
+    auth_password: "{{ admin_password }}"
+    auth_realm: "{{ realm }}"
+    name: "{{ item.name }}"
+    attributes: "{{ item.attributes }}"
+    state: present
+  loop: "{{ roles }}"

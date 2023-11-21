@@ -1,0 +1,9 @@
+auth_keycloak_url: http://localhost:8080
+admin_username: admin
+admin_password: password
+realm: master
+
+postgres_host: keycloak-db
+postgres_db: keycloak
+postgres_user: keycloak
+postgres_password: password

@@ -1,0 +1,28 @@
+- name: create groups
+  community.general.keycloak_group:
+    auth_keycloak_url: "{{ auth_keycloak_url }}"
+    auth_username: "{{ admin_username }}"
+    auth_password: "{{ admin_password }}"
+    auth_realm: "{{ realm }}"
+    name: "{{ item.name }}"
+    attributes:
+      groups: "{{ item.name }}"
+    state: present
+  loop: "{{ keycloak_groups }}"
+
+- name: create a subgroup of a base group
+  community.general.keycloak_group:
+    auth_keycloak_url: "{{ auth_keycloak_url }}"
+    auth_username: "{{ admin_username }}"
+    auth_password: "{{ admin_password }}"
+    auth_realm: "{{ realm }}"
+    name: "{{ item[1] }}"
+    parents:
+      - name: "{{ item[0].name }}"
+    attributes:
+        nothing: nothing  # Needed for parsing, otherwise groups are ignored
+        groups:
+            - "{{item[0].name }}/{{ item[1] }}"
+            - "{{ item[1] }}"
+    state: present
+  loop: "{{ keycloak_groups | subelements('subgroups') }}"

@@ -1,0 +1,21 @@
+- name: set initial user password
+  vars:
+#    ci_job_token: "{{ lookup('env', 'CI_JOB_TOKEN') }}"
+#    foo: "{{'value' if (my_group_var) else 'other_value'}}"
+    seed: "{{ inventory_hostname }}{{ item[0].username }}"
+    changed_users: "{{ user_output.results | selectattr('changed', 'equalto', True) | map(attribute='end_state') | map(attribute='username') }}"
+  community.general.keycloak_user:
+    auth_keycloak_url: "{{ auth_keycloak_url }}"
+    auth_username: "{{ admin_username }}"
+    auth_password: "{{ admin_password }}"
+    auth_realm: "{{ realm }}"
+    username: "{{ item[0].username }}"
+    credentials:
+      - type: password
+        value: "{{ lookup('ansible.builtin.password', 'credentials/user/' + item[0].username + '_password', length=16, chars=['ascii_letters'], seed=seed) }}"
+        temporary: true
+    required_actions: ['UPDATE_PASSWORD']
+    state: present
+    force: true
+  when: "item[0].username in changed_users"
+  loop: "{{ users | subelements('groups') }}"

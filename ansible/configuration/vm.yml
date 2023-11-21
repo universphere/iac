@@ -3,6 +3,6 @@
     - utils
     - zsh
 
-- hosts: tkg
+- hosts: tkg, loadbalancer
   roles:
     - docker

@@ -1,0 +1,39 @@
+- name: ensure Traefik volumes are present
+  become: true
+  file:
+    path: "{{ traefik_volume_letsencrypt }}"
+    state: directory
+    recurse: yes
+
+- name: "restart: {{ restart }} and recreate: {{ recreate }} Traefik"
+  community.docker.docker_container:
+    name: traefik
+    image: traefik:v2.10
+    state: started
+    restart: "{{ restart }}" # Force restart
+    recreate: "{{ recreate }}" # Force recreate
+    restart_policy: "always"
+    ports:
+      - "80:80"
+      - "443:443"
+    command:
+      - "--providers.docker=true"
+      # Only expose container that have traefik.enable=true
+      - "--providers.docker.exposedbydefault=false"
+      # Allow both entrypoints 80 and 443 
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.websecure.address=:443"
+      # Letsencrypt; TODO: Set correct E-Mail later
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.myresolver.acme.email=erik99.rain@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      # Use this for debugging purposes only 
+      # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+    network_mode: bridge   
+    networks:
+      - name: "{{ proxy_network }}"
+    volumes:
+      - "{{ traefik_volume_letsencrypt }}:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock"
