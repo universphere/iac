@@ -1,0 +1,7 @@
+- name: create a network
+  community.docker.docker_network:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "{{ proxy_network }}"
+    - "{{ keycloak_db_network }}"

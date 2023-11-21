@@ -1,0 +1,81 @@
+- name: ensure GitLab volumes are present
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  loop:
+    - "{{ gitlab_volume_config }}"
+    - "{{ gitlab_volume_data }}"
+    - "{{ gitlab_volume_logs }}"
+
+- name: copy file .env
+  become: true
+  ansible.builtin.copy:
+    src: .env
+    dest: "{{ gitlab_volume }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0600'
+
+- name: "restart: {{ restart }} and recreate: {{ recreate }} GitLab"
+  vars:
+    secret: "{{ lookup('ansible.builtin.file', 'credentials/oidc_secrets/gitlab') }}"
+  community.docker.docker_container:
+    name: gitlab
+    image: gitlab/gitlab-ce:latest
+    state: started
+    restart: "{{ restart }}" # Force restart
+    recreate: "{{ recreate }}" # Force recreate
+    restart_policy: "always"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.gitlab.rule: "Host(`git.universphere.cloud`)"
+      traefik.http.routers.gitlab.entrypoints: "websecure"
+      traefik.http.routers.gitlab.tls.certresolver: "myresolver"
+      traefik.http.routers.gitlab.tls: "true"
+      traefik.http.services.gitlab.loadbalancer.server.port: "80"
+    env_file: "{{ gitlab_volume }}/.env"
+    env:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://git.universphere.cloud'
+        # GitLab with external proxy requires to disable auto redirect
+        nginx['listen_port'] = 80
+        nginx['listen_https'] = false
+        
+        # OIDC
+        gitlab_rails['omniauth_allow_single_sign_on'] = ['openid_connect']
+        gitlab_rails['omniauth_block_auto_created_users'] = false
+        gitlab_rails['omniauth_providers'] = [
+                 {
+                   name: "openid_connect",
+                   label: "Keycloak",
+                   args: {
+                     name: "openid_connect",
+                     scope: ["openid", "profile", "email"],
+                     response_type: "code",
+                     issuer: "https://id.universphere.cloud/realms/master",
+                     client_auth_method: "query",
+                     discovery: true,
+                     uid_field: "preferred_username",
+                     pkce: true,
+                     client_options: {
+                       identifier: "gitlab",
+                       secret: "{{ secret }}",
+                       redirect_uri: "https://git.universphere.cloud/users/auth/openid_connect/callback",
+                       gitlab: {
+                        groups_attributes: "groups",
+                        required_groups: ["User"],
+                        admin_groups: ["Admin"],
+                       }
+                     }
+                   }
+                 }
+              ]
+    network_mode: bridge   
+    networks:
+      - name: "{{ proxy_network }}"
+    volumes:
+      - "{{ gitlab_volume_config }}:/etc/gitlab"
+      - "{{ gitlab_volume_data }}:/var/opt/gitlab"
+      - "{{ gitlab_volume_logs }}:/var/log/gitlab"

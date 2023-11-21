@@ -1,0 +1,64 @@
+- name: ensure Keycloak volumes are present
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  loop:
+    - "{{ keycloak_volume }}"
+    - "{{ keycloak_volume_pg_data }}"
+
+- name: create file .env
+  become: true
+  ansible.builtin.copy:
+    dest: "{{ keycloak_volume }}/.env"
+    content: |
+      POSTGRES_DB={{ postgres_db }}
+      POSTGRES_USER={{ postgres_user }}
+      POSTGRES_PASSWORD={{ postgres_password }}
+      KEYCLOAK_ADMIN={{ admin_username }}
+      KEYCLOAK_ADMIN_PASSWORD={{ admin_password }}
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0600'
+
+- name: install postgres database
+  community.docker.docker_container:
+    name: keycloak-db
+    hostname: "{{ postgres_host }}"
+    image: postgres
+    state: started
+    restart: "{{ restart }}" # Force restart
+    recreate: "{{ recreate }}" # Force recreate
+    restart_policy: "always"
+    env_file: "{{keycloak_volume}}/.env"
+    volumes:
+      - "{{ keycloak_volume_pg_data }}:/var/lib/postgresql/data"
+    network_mode: bridge  
+    networks:
+      - name: "{{ keycloak_db_network }}"
+
+- name: "restart: {{ restart }} and recreate: {{ recreate }} Keycloak"
+  community.docker.docker_container:
+    name: keycloak
+    hostname: keycloak
+    image: quay.io/keycloak/keycloak
+    state: started
+    restart: "{{ restart }}" # Force restart
+    recreate: "{{ recreate }}" # Force recreate
+    restart_policy: "always"
+    env_file: "{{keycloak_volume}}/.env"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.keycloak.rule: "Host(`id.universphere.cloud`)"
+      traefik.http.routers.keycloak.entrypoints: "websecure"
+      traefik.http.routers.keycloak.tls.certresolver: "myresolver"
+      traefik.http.routers.keycloak.tls: "true"
+      traefik.http.services.keycloak.loadbalancer.server.port: "8080"
+    network_mode: bridge   
+    networks:
+      - name: "{{ proxy_network }}"
+      - name: "{{ keycloak_db_network }}"
+    command:
+      # Production ready build does not support environments
+      - start --db=postgres --db-url jdbc:postgresql://{{ postgres_host }}:5432/{{ postgres_db }} --db-username {{ postgres_user }} --db-password {{ postgres_password }} --hostname id.universphere.cloud --hostname-strict false --proxy edge --http-enabled true 

@@ -1,0 +1,7 @@
+keycloak_groups:
+  - name: Universphere
+    subgroups: []
+  - name: StaardUp
+    subgroups:
+      - Developer
+      - Maintainer

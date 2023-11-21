@@ -1,0 +1,9 @@
+roles:
+  - name: Administrator
+    attributes:
+      policy: Administrator
+      groups: Administrator
+  - name: Developer
+    attributes:
+      policy: Developer
+      groups: Developer

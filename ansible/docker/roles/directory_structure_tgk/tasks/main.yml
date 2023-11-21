@@ -1,0 +1,15 @@
+- name: create folder structure for tgk
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: directory
+    mode: '0700'
+  loop:
+    - "{{ traefik_volume_letsencrypt }}"
+    - "{{ gitlab_volume_config }}"
+    - "{{ gitlab_volume_data }}"
+    - "{{ gitlab_volume_logs }}"
+    - "{{ keycloak_volume }}"
+    - "{{ keycloak_volume_pg_data }}"

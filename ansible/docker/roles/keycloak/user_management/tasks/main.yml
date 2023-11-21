@@ -1,0 +1,76 @@
+- name: check if user exists
+  community.general.keycloak_user:
+    auth_keycloak_url: "{{ auth_keycloak_url }}"
+    auth_username: "{{ admin_username }}"
+    auth_password: "{{ admin_password }}"
+    auth_realm: "{{ realm }}"
+    username: "{{ item[0].username }}"
+    state: present
+  notify:
+    - set initial user password
+  register: user_output
+  loop: "{{ users | subelements('groups') }}"
+
+- name: flush
+  ansible.builtin.meta: flush_handlers
+
+- name: update user
+  vars:
+    changed_users: "{{ user_output.results | selectattr('changed', 'equalto', True) | map(attribute='end_state') | map(attribute='username') }}"
+  community.general.keycloak_user:
+    auth_keycloak_url: "{{ auth_keycloak_url }}"
+    auth_username: "{{ admin_username }}"
+    auth_password: "{{ admin_password }}"
+    auth_realm: "{{ realm }}"
+    username: "{{ item[0].username }}"
+    firstName: "{{ item[0].firstName }}"
+    lastName: "{{ item[0].lastName }}"
+    email: "{{ item[0].email }}"
+    enabled: true
+    emailVerified: false
+    required_actions: "{{['UPDATE_PASSWORD'] if (item[0].username in changed_users) else []}}"
+    groups:
+      - name: "{{ item[1] }}"
+        state: present
+    state: present
+  loop: "{{ users | subelements('groups') }}"
+
+#- name: debug
+#  debug:
+#    msg: "{{ user_output.results }}"
+
+- name: remove user
+  community.general.keycloak_user:
+    auth_keycloak_url: "{{ auth_keycloak_url }}"
+    auth_username: "{{ admin_username }}"
+    auth_password: "{{ admin_password }}"
+    auth_realm: "{{ realm }}"
+    username: "{{ item.username }}"
+    state: absent
+  loop: "{{ users_to_delete }}"
+
+- name: add user to groups
+  community.general.keycloak_user:
+    auth_keycloak_url: "{{ auth_keycloak_url }}"
+    auth_username: "{{ admin_username }}"
+    auth_password: "{{ admin_password }}"
+    auth_realm: "{{ realm }}"
+    username: "{{ item[0].username }}"
+    groups:
+      - name: "{{ item[1] }}"
+        state: present
+    state: present
+  loop: "{{ users_to_change_groups | subelements('addGroups') }}"
+
+- name: remove user from groups
+  community.general.keycloak_user:
+    auth_keycloak_url: "{{ auth_keycloak_url }}"
+    auth_username: "{{ admin_username }}"
+    auth_password: "{{ admin_password }}"
+    auth_realm: "{{ realm }}"
+    username: "{{ item[0].username }}"
+    groups:
+      - name: "{{ item[1] }}"
+        state: absent
+    state: present
+  loop: "{{ users_to_change_groups | subelements('removeGroups') }}"

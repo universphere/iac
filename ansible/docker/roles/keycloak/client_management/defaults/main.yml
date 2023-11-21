@@ -1,0 +1,5 @@
+auth_keycloak_url: http://localhost:8080
+admin_username: admin
+admin_password: admin
+realm: master
+salt: unknown
