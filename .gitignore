@@ -2,5 +2,8 @@
 .vscode
 **/.env
 **/.vagrant
+**/azure-cluster
+*.secret
+*secret*
 *.code-workspace
 **/credentials
