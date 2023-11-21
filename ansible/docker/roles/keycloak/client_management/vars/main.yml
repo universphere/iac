@@ -4,6 +4,7 @@ clients:
     description: this is the gitlab client for universphere
     root_url: https://git.universphere.cloud/
     admin_url: ""
+    base_url: ""
     enabled: true
     bearerOnly: false
     client_authenticator_type: client-secret
@@ -26,6 +27,7 @@ clients:
     description: this is the harbor client for universphere
     root_url: https://harbor.universphere.cloud/
     admin_url: ""
+    base_url: ""
     enabled: true
     bearerOnly: false
     client_authenticator_type: client-secret
@@ -43,6 +45,30 @@ clients:
     default_client_scopes:
       - harbor
 
+  - name: argocd
+    client_id: argocd
+    description: this is the argocd client for universphere
+    root_url: https://argo.universphere.cloud
+    admin_url: "https://argo.universphere.cloud"
+    base_url: "/applications"
+    enabled: true
+    bearerOnly: false
+    client_authenticator_type: client-secret
+    redirect_uris:
+      - https://argo.universphere.cloud/auth/callback
+    web_origins: 
+      - https://argo.universphere.cloud
+    standard_flow_enabled: true
+    implicit_flow_enabled: false
+    direct_access_grants_enabled: true
+    service_accounts_enabled: true
+    authorization_services_enabled: true
+    public_client: false
+    frontchannel_logout: true
+    protocol: openid-connect
+    default_client_scopes:
+      - argocd
+
 client_scopes:
   - name: harbor
     description: this is the client scope for the harbor oidc integration
@@ -58,5 +84,22 @@ client_scopes:
           multivalued: true
           aggregate.attrs: true
         name: harbor-groups-mapper
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-attribute-mapper
+
+  - name: argocd
+    description: this is the client scope for the argocd oidc integration
+    protocol: openid-connect
+    protocol_mappers:
+      - config:
+          access.token.claim: true
+          claim.name: "groups"
+          id.token.claim: true
+          jsonType.label: String
+          user.attribute: groups
+          userinfo.token.claim: true
+          multivalued: true
+          aggregate.attrs: true
+        name: argocd-groups-mapper
         protocol: openid-connect
         protocolMapper: oidc-usermodel-attribute-mapper
