@@ -1,5 +1,9 @@
 - hosts: all
   roles:
+    - ssh-keys
+    - utils
+    - docker
+    - zsh
     - directory_structure
     - docker_networks
     - traefik
