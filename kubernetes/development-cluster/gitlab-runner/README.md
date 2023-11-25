@@ -33,8 +33,9 @@
 
 **To check whether pod has started successfully**
 - kubectl get pods --namespace gitlab-runner
+<br>
 
 >**Useful Links**
 - [Default values.yaml](https://gitlab.com/gitlab-org/charts/gitlab-runner/blob/main/values.yaml)
 - [GitLab Runner Helm Chart Doku](https://docs.gitlab.com/runner/install/kubernetes.html#configuring-gitlab-runner-using-the-helm-chart)
-<br>
+
