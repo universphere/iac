@@ -6,7 +6,7 @@
 
 **Connect to node via SSH/ only needed for manual set-up**
 >*Example for connecting to node 1 in DEV cluster* <br>
-- ssh root@65.108.248.1 -i \path\to\privatekey OR ssh root@65.108.248.1 (if private key allready known to ssh-agent)
+- ssh root@IP-address -i \path\to\privatekey OR ssh root@IP-address (if private key allready known to ssh-agent)
 <br>
 
 **Commands to check if prerequisites are met (Helm version >=2 installed and kubectl installed)**
@@ -32,7 +32,7 @@
 <br>
 
 **Transfer values.yaml (here via scp, not best practice)**
-- scp C:\Users\Lenovo\Downloads\values.yaml root@65.108.248.1:/root/
+- scp path\values.yaml root@IP-address:/root/
 <br>
 
 **Once you have configured values.yaml**
