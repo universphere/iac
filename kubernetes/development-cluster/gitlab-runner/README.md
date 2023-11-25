@@ -1,4 +1,4 @@
-**Gitlab Runner documentation** 
+**Gitlab Runner documentation**  <br>
 **Connect to node via SSH/ only needed for manual set-up**
 >*Example for connecting to node 1 in DEV cluster* <br>
 - ssh root@IP-address -i \path\to\privatekey OR ssh root@IP-address (if private key allready known to ssh-agent)
