@@ -1,9 +1,4 @@
 **Gitlab Runner documentation** 
->**Useful Links**
-- [Default values.yaml](https://gitlab.com/gitlab-org/charts/gitlab-runner/blob/main/values.yaml)
-- [GitLab Runner Helm Chart Doku](https://docs.gitlab.com/runner/install/kubernetes.html#configuring-gitlab-runner-using-the-helm-chart)
-<br>
-
 **Connect to node via SSH/ only needed for manual set-up**
 >*Example for connecting to node 1 in DEV cluster* <br>
 - ssh root@IP-address -i \path\to\privatekey OR ssh root@IP-address (if private key allready known to ssh-agent)
@@ -31,10 +26,6 @@
 - Set replicas to wished amount (at the moment = 5)
 <br>
 
-**Transfer values.yaml (here via scp, not best practice)**
-- scp path\values.yaml root@IP-address:/root/
-<br>
-
 **Once you have configured values.yaml**
 >Make sure to install as sudo to ensure that runners have admin rights (command includes creation of namespace)
 - helm install --namespace gitlab-runner –-create-namespace gitlab-runner -f values.yaml gitlab/gitlab-runner
@@ -43,4 +34,7 @@
 **To check whether pod has started successfully**
 - kubectl get pods --namespace gitlab-runner
 
-
+>**Useful Links**
+- [Default values.yaml](https://gitlab.com/gitlab-org/charts/gitlab-runner/blob/main/values.yaml)
+- [GitLab Runner Helm Chart Doku](https://docs.gitlab.com/runner/install/kubernetes.html#configuring-gitlab-runner-using-the-helm-chart)
+<br>
