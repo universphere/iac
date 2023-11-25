@@ -55,13 +55,13 @@ gitlabUrl: https://git.universphere.cloud/
 ##
 ## ref: https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html
 ##
-runnerRegistrationToken: "GR1348941Ks2PEFWrXiZd6WigjzKZ"
+runnerRegistrationToken: "To be inserted here"
 
 ## The Runner Token for adding new Runners to the GitLab Server. This must
 ## be retrieved from your GitLab Instance. It is token of already registered runner.
 ## ref: (we don't yet have docs for that, but we want to use existing token)
 ##
-#runnerToken: "glrt-YkYWLpHWj_jEwCYRJbMJ"
+#runnerToken: ""
 #
 
 ## Unregister all runners before termination
