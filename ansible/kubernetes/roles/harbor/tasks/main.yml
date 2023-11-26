@@ -1,0 +1,40 @@
+- name: create folder structure for harbor
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "k8s"
+    group: "k8s"
+    state: directory
+    mode: '0700'
+  loop:
+    - "/mnt/harbor/registry"
+    - "/mnt/harbor/redis"
+    - "/mnt/harbor/trivy"
+    - "/mnt/harbor/db"
+    - "/mnt/harbor/jobservice"
+
+- name: create persistant volumes for harbor
+  kubernetes.core.k8s:
+    state: present
+    src: /../../../../../../kubernetes/production-cluster/harbor/pv.yml
+
+- name: add harbor repository
+  kubernetes.core.helm_repository:
+    name: harbor
+    repo_url: https://helm.goharbor.io
+
+- name: deploy harbor registry chart
+  kubernetes.core.helm:
+    name: harbor
+    chart_ref: harbor/harbor 
+    # chart_version: 
+    release_namespace: infrastructure 
+    create_namespace: true
+    wait: true
+    values_files:
+      - ../../../../../../kubernetes/production-cluster/harbor/values-prod.yml
+    # values:
+    #   harborAdminPassword:
+      #   secretKey:
+    #   registry.credentials.password:
+    #   database.internal.password: 

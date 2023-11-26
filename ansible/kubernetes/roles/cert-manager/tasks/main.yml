@@ -1,0 +1,41 @@
+- name: add cert-manager repository
+  kubernetes.core.helm_repository:
+    name: jetstack
+    repo_url: https://charts.jetstack.io
+
+- name: download cert-manager crds
+  ansible.builtin.get_url:
+    url: https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+    dest: /tmp/cert-manager/cert-manager.crds.yml
+    mode: '0644'
+
+- name: install cert-manager crds
+  kubernetes.core.k8s:
+    state: present
+    src: /tmp/cert-manager/cert-manager.crds.yml
+    wait: true
+
+- name: remove cert-manager crds
+  ansible.builtin.file:
+    path: /tmp/cert-manager/cert-manager.crds.yml
+    state: absent
+
+- name: deploy cert-manager chart
+  kubernetes.core.helm:
+    name: cert-manager
+    chart_ref: jetstack/cert-manager 
+    chart_version: v1.13.2
+    release_namespace: infrastructure 
+    create_namespace: true
+    wait: true
+    values_files:
+      - ../../../../../../kubernetes/production-cluster/cert-manager/values.yml
+
+- name: deploy cluster issuers
+  kubernetes.core.k8s:
+    state: present
+    src: "../../../../../../kubernetes/production-cluster/cert-manager/{{ item }}"
+    wait: true
+  loop:
+    - cluster-issuer-prod.yml
+    - cluster-issuer-stating.yml
