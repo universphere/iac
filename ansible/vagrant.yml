@@ -9,3 +9,4 @@
     - traefik
     - { role: keycloak/docker_installation, tags: docker_installation }
     - gitlab
+    - directory_structure_harbor

@@ -1,3 +1,0 @@
-- hosts: all
-  roles:
-    - directory_structure_harbor
