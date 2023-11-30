@@ -21,9 +21,9 @@ spec:
   dnsNames:
     - universphere.cloud
     - harbor.universphere.cloud
+    - d.universphere.cloud
     - grafana.universphere.cloud
     - argo.universphere.cloud
-    - d.universphere.cloud
   # Issuer references are always required.
   issuerRef:
     name: staging-issuer
