@@ -1,2 +1,0 @@
-ansible_user: k8s
-debian_version: bookworm
