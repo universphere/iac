@@ -1,0 +1,33 @@
+policies: |
+  p, role:staardup, applications, create, staardup/*, allow
+  p, role:staardup, applications, delete, staardup/*, allow
+  p, role:staardup, applications, get, staardup/*, allow
+  p, role:staardup, applications, override, staardup/*, allow
+  p, role:staardup, applications, sync, staardup/*, allow
+  p, role:staardup, applications, update, staardup/*, allow
+  p, role:staardup, logs, get, staardup/*, allow
+  p, role:staardup, exec, create, staardup/*, allow
+  p, role:staardup, projects, get, staardup, allow
+  g, StaardUp, role:staardup
+
+defaultPolicy: |
+  p, role:no-permissions, applications, get, */*, deny
+  p, role:no-permissions, certificates, get, *, deny
+  p, role:no-permissions, clusters, get, *, deny
+  p, role:no-permissions, repositories, get, *, deny
+  p, role:no-permissions, projects, get, *, deny
+  p, role:no-permissions, accounts, get, *, deny
+  p, role:no-permissions, gpgkeys, get, *, deny
+  p, role:no-permissions, logs, get, */*, deny
+  
+# clusters: no
+# projects: yes only get
+# applications
+# applicationsets: no
+# repositories: no
+# certificates:
+# accounts
+# gpgkeys
+# logs
+# exec
+# extensions
