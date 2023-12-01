@@ -107,7 +107,7 @@ image:
   #   - myRegistrKeySecretName
 
 testFramework:
-  enabled: flase
+  enabled: true
   image:
     # -- The Docker registry
     registry: docker.io
@@ -238,15 +238,11 @@ ingress:
   enabled: true
   # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
   # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
-  ingressClassName: "traefik"
+  ingressClassName: traefik
   # Values can be templated
   annotations:
-    cert-manager.io/cluster-issuer: "prod-issuer"
-    # ingress.kubernetes.io/ssl-redirect: "true"
-    # ingress.kubernetes.io/proxy-body-size: "0"
-    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    # nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    # kubernetes.io/ingress.class: "traefik"
+    cert-manager.io/cluster-issuer: prod-issuer
+    # kubernetes.io/ingress.class: traefik
     # kubernetes.io/tls-acme: "true"
   labels: {}
   path: /
@@ -257,26 +253,25 @@ ingress:
   hosts:
     - grafana.universphere.cloud
   ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
-  extraPaths: {}
-  #   - path: /*
-  #     backend:
-  #       serviceName: ssl-redirect
-  #       servicePort: use-annotation
+  extraPaths: []
+  # - path: /*
+  #   backend:
+  #     serviceName: ssl-redirect
+  #     servicePort: use-annotation
   ## Or for k8s > 1.19
   # - path: /*
   #   pathType: Prefix
   #   backend:
   #     service:
-  #       name: grafana
+  #       name: ssl-redirect
   #       port:
-  #         number: 80
-  #         # name: service
+  #         name: use-annotation
 
 
-  tls: 
-   - secretName: "universphere-prod-tls"
-     hosts:
-       - "grafana.universphere.cloud"
+  tls:
+    - secretName: universphere-prod-tls
+      hosts:
+        - grafana.universphere.cloud
 
 resources: {}
 #  limits:
@@ -339,7 +334,7 @@ extraContainerVolumes: []
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-## TODO
+##
 persistence:
   type: pvc
   enabled: false
@@ -406,14 +401,14 @@ initChownData:
 
 # Administrator credentials when not using an existing secret (see below)
 adminUser: admin
-adminPassword: strongpassword # TODO: Change
+# adminPassword: strongpassword
 
 # Use an existing secret for the admin user.
 admin:
   ## Name of the secret. Can be templated.
   existingSecret: ""
   userKey: admin-user
-  passwordKey: admin-password # TODO: Change
+  passwordKey: admin-password
 
 ## Define command to be executed at startup by grafana container
 ## Needed if using `vault-env` to manage secrets (ref: https://banzaicloud.com/blog/inject-secrets-into-pods-vault/)
@@ -567,7 +562,7 @@ plugins: []
 
 ## Configure grafana datasources
 ## ref: http://docs.grafana.org/administration/provisioning/#datasources
-## TODO: Add loki
+##
 datasources: {}
 #  datasources.yaml:
 #    apiVersion: 1
@@ -751,34 +746,31 @@ grafana.ini:
   log:
     mode: console
   grafana_net:
-    url: https://grafana.com
+    url: https://grafana.net
   server:
-    domain: https://grafana.universphere.cloud
-    #  "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ .Values.ingress.hosts | first }}{{ else }}''{{ end }}"
+    domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ .Values.ingress.hosts | first }}{{ else }}''{{ end }}"
+## grafana Authentication can be enabled with the following values on grafana.ini
+  server:
+      # The full public facing url you use in browser, used for redirects and emails
+    root_url: https://grafana.universphere.cloud
+ # https://grafana.com/docs/grafana/latest/auth/github/#enable-github-in-grafana
   auth.generic_oauth:
     enabled: true
     # name: Keycloak
     name: Keycloak
-    allow_sign_up: true
+    allow_sign_up: false
     client_id: grafana
     client_secret: your-fav-secret
     # scopes: openid email profile offline_access roles
-    scopes: openid email profile
+    scopes: openid email profile offline_access
     email_attribute_path: email
     login_attribute_path: username
     name_attribute_path: full_name
     auth_url: "https://id.universphere.cloud/realms/master/protocol/openid-connect/auth"
     token_url: "https://id.universphere.cloud/realms/master/protocol/openid-connect/token"
     api_url:  "https://id.universphere.cloud/realms/master/protocol/openid-connect/userinfo"
-    # api_url: http://localhost:8085/auth/realms/master/protocol/openid-connect/userinfo
-    # root_url:  "https://grafana.universphere.cloud"
-    root_url:  "https://grafana.universphere.cloud"
 
-## grafana Authentication can be enabled with the following values on grafana.ini
- # server:
-      # The full public facing url you use in browser, used for redirects and emails
- #    root_url:
- # https://grafana.com/docs/grafana/latest/auth/github/#enable-github-in-grafana
+    
  # auth.github:
  #    enabled: false
  #    allow_sign_up: false
