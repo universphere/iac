@@ -10,3 +10,4 @@
     - { role: keycloak/role_management, tags: role_management }
     - { role: keycloak/user_management, tags: role_management }
     - gitlab
+    - watchtower
