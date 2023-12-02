@@ -12,6 +12,6 @@
       - dnsutils
       - python3
       - net-tools
-      - rsync
+      - rclone
     update_cache: yes
     state: present

@@ -9,5 +9,6 @@
     - { role: keycloak/group_management, tags: group_management }
     - { role: keycloak/role_management, tags: role_management }
     - { role: keycloak/user_management, tags: role_management }
-    - gitlab
+    - gitlab/install
+    - gitlab/backup
     - watchtower

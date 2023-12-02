@@ -8,6 +8,14 @@ gitlab_volume_config: "/home/k8s/docker/gitlab/config"
 gitlab_volume_data: "/home/k8s/docker/gitlab/data"
 gitlab_volume_logs: "/home/k8s/docker/gitlab/logs"
 
+gitlab_backup_path: "/path/to/backup"
+gitlab_backup_key_file: "/path/to/ssh/key"
+gitlab_backup_remote_host: "remote.host"
+gitlab_backup_remote_user: "remote_user"
+gitlab_backup_remote_port: 22
+gitlab_remote_backup_path: "/gitlab-backup"
+
+
 ## Keycloak
 keycloak_db_network: "keycloak_db_network"
 keycloak_volume: "/home/k8s/docker/keycloak"
