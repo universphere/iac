@@ -26,7 +26,7 @@
   community.docker.docker_container:
     name: keycloak-db
     hostname: "{{ postgres_host }}"
-    image: postgres
+    image: postgres:16
     state: started
     restart: "{{ restart }}" # Force restart
     recreate: "{{ recreate }}" # Force recreate
@@ -42,7 +42,7 @@
   community.docker.docker_container:
     name: keycloak
     hostname: keycloak
-    image: quay.io/keycloak/keycloak
+    image: quay.io/keycloak/keycloak:22.0
     state: started
     restart: "{{ restart }}" # Force restart
     recreate: "{{ recreate }}" # Force recreate
