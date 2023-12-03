@@ -37,7 +37,6 @@ helm install promtail grafana/promtail --values ./promtail/values-prod.yml -n gr
 ### TODOs
 * add ansible path to existing role, currently not commited/ pushed
 * test loki integration -> some stuff with the admin password wrong
-* add loki datasource in helm
 * after keycloak login user is per default just a viewer -> need to be at least a developer or something like that 
 * --> login as dev or admin (both must be working)
 * test logging with a hello world
