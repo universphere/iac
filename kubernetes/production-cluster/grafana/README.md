@@ -36,10 +36,8 @@ helm install promtail grafana/promtail --values ./promtail/values-prod.yml -n gr
 
 ### TODOs
 * add ansible path to existing role, currently not commited/ pushed
-* -> some stuff with the admin password wrong, can not login with creds extracted with `   kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
 * test logging with a hello world
 * deploy on prod cluster (remember to change the default credentials)
-* may fix the ws health check error 
 
 ### Ressources
 https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml

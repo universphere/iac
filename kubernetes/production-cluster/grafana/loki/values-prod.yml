@@ -9,7 +9,7 @@ global:
   # -- configures DNS service name
   dnsService: "loki-gateway"
   # -- configures DNS service namespace
-  dnsNamespace: "default"
+  dnsNamespace: "grafana"
 # -- Overrides the chart's name
 nameOverride: null
 # -- Overrides the chart's computed fullname
@@ -1222,8 +1222,10 @@ singleBinary:
 # You'll need to supply authn configuration for your ingress controller.
 ingress:
   enabled: false
-  ingressClassName: ""
-  annotations: {}
+  ingressClassName: "traefik"
+  annotations: 
+    cert-manager.io/cluster-issuer: staging-issuer
+
   #    nginx.ingress.kubernetes.io/auth-type: basic
   #    nginx.ingress.kubernetes.io/auth-secret: loki-distributed-basic-auth
   #    nginx.ingress.kubernetes.io/auth-secret-type: auth-map
@@ -1255,9 +1257,12 @@ ingress:
       - /prometheus/api/v1/alerts
   # -- Hosts configuration for the ingress, passed through the `tpl` function to allow templating
   hosts:
-    - loki.example.com
+    - c.universphere.cloud
   # -- TLS configuration for the ingress. Hosts passed through the `tpl` function to allow templating
-  tls: []
+  tls:
+    - secretName: universphere-staging-tls
+      hosts:
+        - c.universphere.cloud
 #    - hosts:
 #       - loki.example.com
 #      secretName: loki-distributed-tls
@@ -1389,25 +1394,25 @@ gateway:
   # Gateway ingress configuration
   ingress:
     # -- Specifies whether an ingress for the gateway should be created
-    enabled: false
+    enabled: true
     # -- Ingress Class Name. MAY be required for Kubernetes versions >= 1.18
-    ingressClassName: ""
+    ingressClassName: "traefik"
     # -- Annotations for the gateway ingress
-    annotations: {}
-    # -- Labels for the gateway ingress
+    annotations: 
+      cert-manager.io/cluster-issuer: staging-issuer
     labels: {}
     # -- Hosts configuration for the gateway ingress, passed through the `tpl` function to allow templating
     hosts:
-      - host: gateway.loki.example.com
+      - host: c.universphere.cloud
         paths:
           - path: /
             # -- pathType (e.g. ImplementationSpecific, Prefix, .. etc.) might also be required by some Ingress Controllers
-            # pathType: Prefix
+            pathType: Prefix
     # -- TLS configuration for the gateway ingress. Hosts passed through the `tpl` function to allow templating
     tls:
-      - secretName: loki-gateway-tls
+      - secretName: universphere-staging-tls
         hosts:
-          - gateway.loki.example.com
+          - c.universphere.cloud
   # Basic auth configuration
   basicAuth:
     # -- Enables basic authentication for the gateway
