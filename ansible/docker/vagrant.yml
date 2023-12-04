@@ -1,7 +1,0 @@
-- hosts: all
-  roles:
-    - directory_structure
-    - docker_networks
-    - traefik
-    - { role: keycloak/docker_installation, tags: docker_installation }
-    - gitlab
