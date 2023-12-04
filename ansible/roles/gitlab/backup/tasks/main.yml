@@ -27,12 +27,12 @@
     group: root
     mode: '0640'
 
-- name: Apply gitlab-backup.sh from template
+- name: Apply gitlab-backup from template to cron.daily
   become: true
   become_user: "root"
   template:
-    src: backup.sh.j2
-    dest: /etc/cron.daily/gitlab-backup.sh
+    src: backup.j2
+    dest: /etc/cron.daily/gitlab-backup
     owner: root
     group: root
     mode: '0755'
