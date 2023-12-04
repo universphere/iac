@@ -29,6 +29,7 @@
     description: "{{ item.description }}"
     root_url: "{{ item.root_url }}"
     admin_url: "{{ item.admin_url }}"
+    base_url: "{{ item.base_url }}"
     enabled: "{{ item.enabled }}"
     bearerOnly: "{{ item.bearerOnly }}"
     client_authenticator_type: "{{ item.client_authenticator_type }}"
