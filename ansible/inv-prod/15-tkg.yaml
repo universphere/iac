@@ -1,0 +1,8 @@
+tkg:
+  children:
+    gitlab:
+      hosts:
+        node1:
+    keycloak:
+      hosts:
+        node1:

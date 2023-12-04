@@ -1,0 +1,9 @@
+#!/bin/sh
+# Start backup
+docker exec -t gitlab gitlab-backup create
+# Backup secrets
+docker exec -t gitlab tar cfvp /var/opt/gitlab/backups/$(date +%s)_$(date +%F)_git-conf.tar /etc/gitlab
+# Delete backups older than five days
+find /home/k8s/docker/gitlab/data/backups/ -maxdepth 1 -type f -mtime +5 -name '*.tar' -execdir rm -- '{}' \;
+# rclone to remote server
+rclone sync {{ gitlab_backup_path }} storagebox:{{ gitlab_remote_backup_path }}

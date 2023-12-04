@@ -1,0 +1,12 @@
+- name: "restart: {{ restart }} and recreate: {{ recreate }} Watchtower"
+  community.docker.docker_container:
+    name: watchtower
+    image: containrrr/watchtower
+    state: started
+    restart: "{{ restart }}" # Force restart
+    recreate: "{{ recreate }}" # Force recreate
+    restart_policy: "always"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    command:
+      - "--run-once"
