@@ -1,0 +1,14 @@
+- hosts: tkg
+  roles:
+    - directory_structure_tgk
+    - docker_network
+    - traefik
+    - { role: keycloak/docker_installation, tags: docker_installation }
+    - delay
+    - { role: keycloak/client_management, tags: client_management }
+    - { role: keycloak/group_management, tags: group_management }
+    - { role: keycloak/role_management, tags: role_management }
+    - { role: keycloak/user_management, tags: role_management }
+    - gitlab/install
+    - gitlab/backup
+    - watchtower

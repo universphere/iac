@@ -1,0 +1,3 @@
+loadbalancer:
+  hosts:
+    node2:
