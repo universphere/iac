@@ -22,7 +22,7 @@ kubectl apply -f pv.yml
 
 #### 3. Helm install
 ```bash
-helm install harbor harbor/harbor -n harbor --values ./values-<prod/staging>.yaml
+helm install harbor harbor/harbor -n harbor --values ./values-<prod/staging>.yml
 ```
 
 ### Official Documentation
