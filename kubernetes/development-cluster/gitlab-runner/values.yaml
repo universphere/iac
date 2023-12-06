@@ -61,7 +61,7 @@ runnerRegistrationToken: "To be inserted here"
 ## be retrieved from your GitLab Instance. It is token of already registered runner.
 ## ref: (we don't yet have docs for that, but we want to use existing token)
 ##
-#runnerToken: ""
+# runnerToken: ""
 #
 
 ## Unregister all runners before termination
@@ -71,7 +71,7 @@ runnerRegistrationToken: "To be inserted here"
 ## non-existant runners. Un-registering the runner before termination mitigates this issue.
 ## ref: https://docs.gitlab.com/runner/commands/index.html#gitlab-runner-unregister
 ##
-# unregisterRunners: true
+unregisterRunners: true
 
 ## When stopping the runner, give it time to wait for its jobs to terminate.
 ##
@@ -156,12 +156,15 @@ rbac:
   ##
   ## ref: https://docs.gitlab.com/runner/executors/kubernetes.html#configure-runner-api-permissions
   ##
-  rules: 
-   - resources: ["configmaps", "events", "pods", "pods/attach", "pods/exec", "secrets", "services"]
-     verbs: ["get", "list", "watch", "create", "patch", "update", "delete"]
-   - apiGroups: [""]
-     resources: ["pods/exec"]
-     verbs: ["create", "patch", "delete"]
+  rules:
+    - resources: ["configmaps", "events", "pods", "pods/attach", "pods/exec", "secrets", "services"]
+      verbs: ["get", "list", "watch", "create", "patch", "update", "delete"]
+    - apiGroups: [""]
+      resources: ["pods/exec"]
+      verbs: ["create", "patch", "delete"]
+    - apiGroups: [""]
+      resources: ["pods/log"]
+      verbs: ["get"]
 
   ## Run the gitlab-bastion container with the ability to deploy/manage containers of jobs
   ## cluster-wide or only within namespace
@@ -185,7 +188,7 @@ rbac:
   podSecurityPolicy:
     enabled: false
     resourceNames:
-    - gitlab-runner
+      - gitlab-runner
 
   ## Specify one or more imagePullSecrets used for pulling the runner image
   ##
@@ -297,16 +300,16 @@ service:
   ##
   type: ClusterIP
 
-  ## Specify the services metrics nodeport if you use a service of type nodePort
-  ##
-  # metrics:
+    ## Specify the services metrics nodeport if you use a service of type nodePort
+    ##
+    # metrics:
 
     ## Specify the node port under which the prometheus metrics of the runner are made
     ## available.
     ##
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#nodeport
     ##
-    # nodePort: ""
+  # nodePort: ""
 
   ## Provide a list of additional ports to be exposed by this service
   ##
@@ -427,7 +430,7 @@ runners:
     ## Use this line for access using google-application-credentials file
     # secretName: google-application-credentials
     ## Use this line for access using Azure with azure-account-name and azure-account-key
-    # secretName: azureaccess
+  # secretName: azureaccess
 
 ## Specify the name of the scheduler which used to schedule runner pods.
 ## Kubernetes supports multiple scheduler configurations.
@@ -440,10 +443,20 @@ runners:
 securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: false
-  runAsNonRoot: false
+  runAsNonRoot: true
   privileged: false
   capabilities:
     drop: ["ALL"]
+
+## Configure update strategy for multi-replica deployments
+## Kubernetes supports types Recreate, and RollingUpdate
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+##
+strategy: {}
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
+# type: RollingUpdate
 
 ## Configure securitycontext valid for the whole pod
 ## ref: https://kubernetes.io/docs/concepts/security/pod-security-standards/
@@ -469,7 +482,7 @@ resources: {}
   # requests:
   #   memory: 128Mi
   #   cpu: 100m
-  #   ephemeral-storage: 256Mi
+#   ephemeral-storage: 256Mi
 
 ## Affinity for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -486,7 +499,7 @@ topologySpreadConstraints: {}
   #   whenUnsatisfiable: DoNotSchedule
   #   labelSelector:
   #     matchLabels:
-  #       foo: bar
+#       foo: bar
 
 ## Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
@@ -494,7 +507,7 @@ topologySpreadConstraints: {}
 nodeSelector: {}
   # Example: The gitlab runner manager should not run on spot instances so you can assign
   # them to the regular worker nodes only.
-  # node-role.kubernetes.io/worker: "true"
+# node-role.kubernetes.io/worker: "true"
 
 ## List of node taints to tolerate (requires Kubernetes >= 1.6)
 ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -503,7 +516,7 @@ tolerations: []
   # Example: Regular worker nodes may have a taint, thus you need to tolerate the taint
   # when you assign the gitlab runner manager with nodeSelector or affinity to the nodes.
   # - key: "node-role.kubernetes.io/worker"
-  #   operator: "Exists"
+#   operator: "Exists"
 
 ## Configure environment variables that will be present when the registration command runs
 ## This provides further control over the registration process and the config.toml file
@@ -524,25 +537,25 @@ hostAliases: []
   # - ip: "10.1.2.3"
   #   hostnames:
   #   - "foo.remote"
-  #   - "bar.remote"
+#   - "bar.remote"
 
 ## Annotations to be added to deployment
 ##
 deploymentAnnotations: {}
   # Example:
-  # downscaler/uptime: <my_uptime_period>
+# downscaler/uptime: <my_uptime_period>
 
 ## Labels to be added to deployment
 ##
 deploymentLabels: {}
   # Example:
-  # owner.team: <my_cool_team>
+# owner.team: <my_cool_team>
 
 ## Annotations to be added to manager pod
 ##
 podAnnotations: {}
   # Example:
-  # iam.amazonaws.com/role: <my_role_arn>
+# iam.amazonaws.com/role: <my_role_arn>
 
 ## Labels to be added to manager pod
 ##
@@ -550,20 +563,20 @@ podLabels: {}
   # Example:
   # owner.team: <my_cool_team>
 
-## HPA support for custom metrics:
-## This section enables runners to autoscale based on defined custom metrics.
-## In order to use this functionality, Need to enable a custom metrics API server by
-## implementing "custom.metrics.k8s.io" using supported third party adapter
-## Example: https://github.com/directxman12/k8s-prometheus-adapter
-##
-#hpa: {}
+  ## HPA support for custom metrics:
+  ## This section enables runners to autoscale based on defined custom metrics.
+  ## In order to use this functionality, Need to enable a custom metrics API server by
+  ## implementing "custom.metrics.k8s.io" using supported third party adapter
+  ## Example: https://github.com/directxman12/k8s-prometheus-adapter
+  ##
+  #hpa: {}
   # minReplicas: 1
   # maxReplicas: 10
   # metrics:
   # - type: Pods
   #   pods:
   #     metricName: gitlab_runner_jobs
-  #     targetAverageValue: 400m
+#     targetAverageValue: 400m
 
 ## Configure priorityClassName for manager pod. See k8s docs for more info on how pod priority works:
 ##  https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
@@ -580,7 +593,7 @@ secrets: []
   # - name: myOtherSecret
   #   items:
   #     - key: key_one
-  #       path: path_one
+#       path: path_one
 
 ## Boolean to turn off the automountServiceAccountToken in the deployment
 ## ref: https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#bound-service-account-token-volume
@@ -596,17 +609,22 @@ configMaps: {}
 
 ## Additional volumeMounts to add to the runner container
 ##
-#volumeMounts: []
+volumeMounts:
   # Example:
   # - name: my-volume
   #   mountPath: /mount/path
+  - name: root-gitlab-runner
+    mountPath: /.gitlab-runner
 
 ## Additional volumes to add to the runner deployment
 ##
-volumeMounts:
-- name: root-gitlab-runner
-  mountPath: /.gitlab-runner
 volumes:
-- name: root-gitlab-runner
-  emptyDir:
-    medium: "Memory"
+  # Example:
+  # - name: my-volume
+  #   persistentVolumeClaim:
+  #     claimName: my-pvc
+  - name: root-gitlab-runner
+    emptyDir:
+      # Would use RAM instead of Disk
+      # medium: "Memory"
+      sizeLimit: 1Gi
