@@ -1,0 +1,8 @@
+all:
+  hosts:
+    hm1:
+      ansible_host: xxx.1
+    hw2:
+      ansible_host: xxx.110
+    hw3:
+      ansible_host: xxx.131

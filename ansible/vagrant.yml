@@ -1,0 +1,12 @@
+- hosts: all
+  roles:
+    - ssh-keys
+    - utils
+    - docker
+    - zsh
+    - directory_structure
+    - docker_networks
+    - traefik
+    - { role: keycloak/docker_installation, tags: docker_installation }
+    - gitlab
+    - directory_structure_harbor
