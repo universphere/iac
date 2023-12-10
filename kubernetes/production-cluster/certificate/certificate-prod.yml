@@ -24,6 +24,7 @@ spec:
     - dependencytrack.universphere.cloud
     - grafana.universphere.cloud
     - argo.universphere.cloud
+    - b.universphere.cloud
   # Issuer references are always required.
   issuerRef:
     name: prod-issuer
