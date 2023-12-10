@@ -3,10 +3,10 @@
 # Declare variables to be passed into your templates.
 
 # If the deployment Type is set to Deployment sonarqube is deployed as a replica set.
-deploymentType: "StatefulSet"
+deploymentType: "Deployment"
 
 # There should not be more than 1 sonarqube instance connected to the same database. Please set this value to 1 or 0 (in case you need to scale down programmatically).
-replicaCount: 0
+replicaCount: 1
 
 # This will use the default deployment strategy unless it is overriden
 deploymentStrategy: {}
@@ -92,7 +92,6 @@ ingress:
   enabled: true
   # Used to create an Ingress record.
   hosts:
-    # TODO
     - name: b.universphere.cloud
       # Different clouds or configurations might need /* as the default path
       path: /
@@ -102,8 +101,7 @@ ingress:
       # the pathType can be one of the following values: Exact|Prefix|ImplementationSpecific(default)
       # pathType: ImplementationSpecific
   annotations:
-    cert-manager.io/cluster-issuer: prod-issuer 
-  # kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: prod-issuer
 
   # Set the ingressClassName on the ingress record
   ingressClassName: traefik
@@ -114,11 +112,9 @@ ingress:
   #  traffic-type: internal
   tls:
   # Secrets must be manually created in the namespace. To generate a self-signed certificate (and private key) and then create the secret in the cluster please refer to official documentation available at https://kubernetes.github.io/ingress-nginx/user-guide/tls/#tls-secrets
-    - hosts:
-      - b.universphere.cloud
-    - hosts:
+    - secretName: universphere-prod-tls
+      hosts:
         - b.universphere.cloud
-      secretName: universphere-prod-tls
 
 route:
   enabled: false
@@ -238,7 +234,7 @@ caCerts:
   secret: your-secret
 
 initSysctl:
-  enabled: true
+  enabled: false
   vmMaxMapCount: 524288
   fsFileMax: 131072
   nofile: 131072
@@ -251,7 +247,7 @@ initSysctl:
 
 # This should not be required anymore, used to chown/chmod folder created by faulty CSI driver that are not applying properly POSIX fsgroup.
 initFs:
-  enabled: true
+  enabled: false
   # Image: busybox:1.36
   # Compatible with podSecurity standard baseline.
   securityContext:
@@ -370,7 +366,6 @@ resources:
     cpu: 400m
     memory: 2Gi
 
-# Elasticsearch is not required for us
 persistence:
   enabled: false
   ## Set annotations on pvc
@@ -424,11 +419,11 @@ jdbcOverwrite:
   # If enable the JDBC Overwrite, make sure to set `postgresql.enabled=false`
   enable: false
   # The JDBC url of the external DB
-  jdbcUrl: "jdbc:postgresql://postgres-postgresql-0:5432/sonarqube?socketTimeout=1500"
+  jdbcUrl: "jdbc:postgresql://myPostgress/myDatabase?socketTimeout=1500"
   # The DB user that should be used for the JDBC connection
-  jdbcUsername: "sonarqube"
+  jdbcUsername: "sonarUser"
   # Use this if you don't mind the DB password getting stored in plain text within the values file
-  jdbcPassword: "abcdefgh123456"
+  jdbcPassword: "sonarPass"
   ## Alternatively, use a pre-existing k8s secret containing the DB password
   # jdbcSecretName: "sonarqube-jdbc"
   ## and the secretValueKey of the password found within that secret
@@ -438,7 +433,7 @@ jdbcOverwrite:
 ## ref: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/README.md
 postgresql:
   # Enable to deploy the bitnami PostgreSQL chart
-  enabled: false
+  enabled: true
   ## postgresql Chart global settings
   # global:
   #   imageRegistry: ''
