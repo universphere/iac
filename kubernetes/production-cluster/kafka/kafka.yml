@@ -10,13 +10,13 @@ spec:
       type: inline
       loggers:
         kafka.root.logger.level: INFO
-      resources:
-       requests:
-         memory: 8Gi
-         cpu: "1"
-       limits:
-         memory: 16Gi
-         cpu: "2"
+    resources:
+      requests:
+        memory: 8Gi
+        cpu: "1"
+      limits:
+        memory: 16Gi
+        cpu: "2"
     readinessProbe:
       initialDelaySeconds: 15
       timeoutSeconds: 5
@@ -27,13 +27,13 @@ spec:
       -Xms: 8192m
       -Xmx: 8192m
     listeners:
-      - name: internal
+      - name: plain
         port: 9092
         type: internal
         tls: false
         configuration:
           useServiceDnsDomain: true
-      - name: internal-tls
+      - name: tls
         port: 9093
         type: internal
         tls: true
@@ -55,7 +55,7 @@ spec:
       type: persistent-claim
       size: 10Gi
       selector:
-        - app: kafka
+        app: kafka
   zookeeper:
     replicas: 3
     logging:
@@ -65,7 +65,7 @@ spec:
     resources:
       requests:
         memory: 4Gi
-        cpu: "1"
+        cpu: 500m
       limits:
         memory: 6Gi
         cpu: "1"
@@ -76,7 +76,7 @@ spec:
       type: persistent-claim
       size: 5Gi
       selector:
-        - app: kafka
+        app: zookeeper
   entityOperator:
     tlsSidecar:
       resources:
@@ -96,7 +96,7 @@ spec:
       resources:
         requests:
           memory: 512Mi
-          cpu: 500m
+          cpu: 200m
         limits:
           memory: 512Mi
           cpu: "1"
@@ -110,7 +110,7 @@ spec:
       resources:
         requests:
           memory: 512Mi
-          cpu: 500m
+          cpu: 200m
         limits:
           memory: 512Mi
           cpu: "1"
