@@ -25,19 +25,13 @@ kubectl apply -f pv.yml
 helm install grafana grafana/grafana --values values-prod.yml -n grafana
 ```
 
-#### 4. Install Loki
-```bash
-helm install loki grafana/loki --values ./loki/values-prod.yml -n grafana
-```
-#### 5. Install Promtail
-```bash
-helm install promtail grafana/promtail --values ./promtail/values-prod.yml -n grafana
-```
+To get admin password:
+` kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
 
-### TODOs
-* add ansible path to existing role, currently not commited/ pushed
-* test logging with a hello world
-* deploy on prod cluster (remember to change the default credentials)
+#### 4. Install Loki & Promtail
+```bash
+helm install loki oci://registry-1.docker.io/bitnamicharts/grafana-loki -n grafana --values loki-values.yaml
+```
 
 ### Ressources
 https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml

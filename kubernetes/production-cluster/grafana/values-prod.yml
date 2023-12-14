@@ -563,14 +563,14 @@ plugins: []
 ## Configure grafana datasources
 ## ref: http://docs.grafana.org/administration/provisioning/#datasources
 ##
-datasources: 
+datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:
       - name: Loki
         type: loki
         access: proxy
-        url: http://loki-gateway.grafana.svc.cluster.local
+        url: http://loki-grafana-loki-gateway.grafana.svc.cluster.local
         isDefault: true
 #  datasources.yaml:
 #    apiVersion: 1
@@ -779,7 +779,7 @@ grafana.ini:
     token_url: "https://id.universphere.cloud/realms/master/protocol/openid-connect/token"
     api_url:  "https://id.universphere.cloud/realms/master/protocol/openid-connect/userinfo"
 
-    
+
  # auth.github:
  #    enabled: false
  #    allow_sign_up: false
