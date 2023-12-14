@@ -118,16 +118,16 @@ clients:
   - name: dependency-track
     client_id: dependency-track
     description: this is the dependency track client for universphere
-    root_url: https://d.universphere.cloud/
+    root_url: https://dependencytrack.universphere.cloud/
     admin_url: ""
     base_url: ""
     enabled: true
     bearerOnly: false
     client_authenticator_type: client-secret
     redirect_uris:
-      - https://d.universphere.cloud/static/oidc-callback.html
+      - https://dependencytrack.universphere.cloud/static/oidc-callback.html
     web_origins:
-      - https://d.universphere.cloud/
+      - https://dependencytrack.universphere.cloud/
     standard_flow_enabled: true
     implicit_flow_enabled: true
     direct_access_grants_enabled: false
