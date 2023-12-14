@@ -42,6 +42,7 @@ helm install promtail grafana/promtail --values ./promtail/values-prod.yml -n gr
 * --> login as dev or admin (both must be working)
 * test logging with a hello world
 * deploy on prod cluster (remember to change the default credentials)
+* update ansible role for keycloak with grafana as client (currently wildcard for test purposes)
 
 ### Ressources
 https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml

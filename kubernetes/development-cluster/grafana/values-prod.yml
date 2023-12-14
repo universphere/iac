@@ -251,7 +251,7 @@ ingress:
   pathType: Prefix
 
   hosts:
-    - grafana.universphere.cloud
+    - dev.universphere.cloud
   ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
   extraPaths: []
   # - path: /*
@@ -271,7 +271,7 @@ ingress:
   tls:
     - secretName: universphere-prod-tls
       hosts:
-        - grafana.universphere.cloud
+        - dev.universphere.cloud
 
 resources: {}
 #  limits:
@@ -752,7 +752,7 @@ grafana.ini:
 ## grafana Authentication can be enabled with the following values on grafana.ini
   server:
       # The full public facing url you use in browser, used for redirects and emails
-    root_url: https://grafana.universphere.cloud
+    root_url: https://dev.universphere.cloud
  # https://grafana.com/docs/grafana/latest/auth/github/#enable-github-in-grafana
   auth.generic_oauth:
     enabled: true
