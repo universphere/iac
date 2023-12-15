@@ -3,7 +3,7 @@ kind: KafkaTopic
 metadata:
   name: universphere-secure
   labels:
-    strimzi.io/cluster: my-kafka
+    strimzi.io/cluster: kafka
 spec:
   partitions: 1
   replicas: 1
@@ -17,7 +17,7 @@ kind: KafkaTopic
 metadata:
   name: universphere-insecure
   labels:
-    strimzi.io/cluster: my-kafka
+    strimzi.io/cluster: kafka
 spec:
   partitions: 1
   replicas: 1
