@@ -1,0 +1,6 @@
+- name: create k8s namespace 
+  kubernetes.core.k8s:
+    # kubeconfig: "{{ kubeconfig }}"
+    state: present
+    template: 'namespace.j2'
+    wait: true

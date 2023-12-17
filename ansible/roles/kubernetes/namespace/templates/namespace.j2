@@ -1,0 +1,9 @@
+{% for namespace in kubernetes.namespaces %}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ kubernetes.namespace_prefix }}-{{ namespace.name }}
+  labels:
+    name: {{ kubernetes.namespace_prefix }}-{{ namespace.name }}
+{% endfor %}
+

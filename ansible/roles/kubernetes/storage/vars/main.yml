@@ -1,0 +1,7 @@
+kubernetes:
+  namespace_prefix: pvc-
+  storage:
+    - name: 799d4f92-19d9-4504-b8bf-4222b834ae5b
+      size: 1Gi
+    # - name: d363497d-28f5-4196-9118-0533c3768786
+    #   size: 5Gi

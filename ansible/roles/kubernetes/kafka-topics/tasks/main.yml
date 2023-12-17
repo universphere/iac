@@ -1,0 +1,35 @@
+# - name: create kafka topics
+#   kubernetes.core.k8s:
+#     # kubeconfig: "{{ kubeconfig }}"
+#     state: present
+#     template: 'topic.j2'
+#     wait: true
+
+- name: get a list of all kafka topics objects
+  kubernetes.core.k8s_info:
+    api_version: kafka.strimzi.io/v1beta2
+    kind: KafkaTopic
+    namespace: default
+  register: kafka_topic_list
+
+- name: debug
+  debug:
+    msg: "{{ kafka_topic_list }}"
+
+- name: delete unused kafka topics
+  vars:
+    custom_kafka_topic_regex: "^{{ kafka.topic_prefix }}"
+    consumer_offset_kafka_topic_regex: "^consumer-offsets"
+    strimzi_kafka_topics_regex: "^strimzi"
+    prefix: "{{ kafka.topic_prefix }}-"
+    defined_kafka_topic_names: "{{ kafka.topics | map(attribute='name') }}"
+    defined_kafka_topics: "{{ [prefix] | product(defined_kafka_topic_names) | map('join') | list }}"
+  kubernetes.core.k8s:
+    api_version: kafka.strimzi.io/v1beta2
+    kind: KafkaTopic
+    namespace: default
+    name: "{{ item }}"
+    state: absent
+    wait: true
+  loop:
+    - "{{ kafka_topic_list.resources | rejectattr('metadata.name', 'search', consumer_offset_kafka_topic_regex) | rejectattr('metadata.name', 'search', strimzi_kafka_topics_regex) | selectattr('metadata.name', 'search', custom_kafka_topic_regex) | rejectattr('metadata.name', 'in', defined_kafka_topics) | map(attribute='metadata.name') }}"

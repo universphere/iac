@@ -1,0 +1,29 @@
+{% for storage in kubernetes.storage %}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ kubernetes.namespace_prefix }}-{{ storage.name }}
+  labels: 
+    type: local
+    name: {{ kubernetes.namespace_prefix }}-{{ storage.name }}
+spec:
+  # storageClassName: default
+  capacity: 
+    storage: {{ storage.size }}
+  accessModes: 
+    - ReadWriteOnce
+  local:
+    path: /mnt/{{ kubernetes.namespace_prefix }}/{{ storage.name }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - i-k8s-node-6
+          - i-k8s-node-7
+          - i-k8s-node-8
+          - i-k8s-node-9
+          - i-k8s-node-10
+{% endfor %}

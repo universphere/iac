@@ -1,0 +1,63 @@
+- name: create oidc groups
+  dependency-track:
+    url: 'http://localhost:8081'
+    api_key: ''
+    oidc_groups:
+      - Foobar
+      - Foo
+      - Bar
+
+- name: create team
+  dependency-track:
+    url: 'http://localhost:8081'
+    api_key: ''
+    teams:
+      - name: Foo
+
+- name: create projects
+  dependency-track:
+    url: 'http://localhost:8081'
+    api_key: ''
+    projects:
+      - name: Foobar
+        classifier: APPLICATION
+      - name: FoobarContainer
+        parent: Foobar
+        classifier: CONTAINER
+      - name: Foo
+        classifier: APPLICATION
+      - name: Bar
+        classifier: APPLICATION
+
+- name: create foobar team with permissions and portfolio access control
+  dependency-track:
+    url: 'http://localhost:8081'
+    api_key: ''
+    teams:
+      - name: Foobar
+        oidc_groups:
+          - Foobar
+        permissions:
+          - SYSTEM_CONFIGURATION
+        portfolio_access_control:
+          verify:
+            enabled: True
+            root_project: Foobar
+          projects:
+            - FoobarContainer
+
+- name: set or update some CI/CD variables with raw value
+  community.general.gitlab_group_variable:
+    api_url: https://git.universphere.cloud/
+    validate_certs: true
+    api_token: glpat-yCpUzMQe62EFxWAy7Kou
+    group: TestGroup
+    purge: false
+    vars:
+      DEPTRACK_API_KEY:
+        value: ''
+        masked: true
+        protected: true
+        raw: true
+        variable_type: env_var
+        environment_scope: '*'

@@ -1,0 +1,62 @@
+- name: create directories on worker nodes 
+  # become: true
+  debug:
+    msg: "{{ kubernetes.namespace_prefix }}-{{ item.name }}"
+  ansible.builtin.file:
+    path: "{{ item.0.namespace_prefix }}-{{ item.1.name }}"
+    owner: "k8s"
+    group: "k8s"
+    state: directory
+    mode: '0700'
+  with_items:
+    - "{{ kubernetes.storage }}"
+
+- name: create persistant volumes
+  kubernetes.core.k8s:
+    # kubeconfig: "{{ kubeconfig }}"
+    state: present
+    template: 'pv.j2'
+    wait: true
+
+- name: get a list of all persistant volumes
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: PersistentVolume 
+  register: persistant_volume_list
+
+- name: delete the pvc of unused storage
+  vars:
+    prefix: "{{ kubernetes.namespace_prefix }}-"
+    defined_volumes_names: "{{ kubernetes.storage | map(attribute='name') }}"
+    defined_volumes: "{{ [prefix] | product(defined_volumes_names) | map('join') | list }}"
+  debug:
+    msg: "{{ item }}"
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: PersistentVolumeClaim 
+    name: "{{ item }}"
+    state: absent
+    wait: true
+  loop:
+    - "{{ persistant_volume_list.resources | rejectattr('metadata.name', 'in', defined_volumes) | map(attribute='spec.claimRef.name') }}"
+
+- name: delete the pv of unused storage
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: PersistentVolume 
+    name: "{{ item }}"
+    state: absent
+    wait: true
+  loop:
+    - "{{ persistant_volume_list.resources | rejectattr('metadata.name', 'in', defined_volumes) | map(attribute='metadata.name') }}"
+
+- name: delete directories on worker nodes 
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "k8s"
+    group: "k8s"
+    state: directory
+    mode: '0700'
+  loop:
+    - "{{ persistant_volume_list.resources | rejectattr('metadata.name', 'in', defined_volumes) | map(attribute='spec.hostPath.path') }}"
