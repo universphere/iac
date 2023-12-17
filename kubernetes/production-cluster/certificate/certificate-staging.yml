@@ -21,7 +21,7 @@ spec:
   dnsNames:
     - universphere.cloud
     - harbor.universphere.cloud
-    - d.universphere.cloud
+    - dependencytrack.universphere.cloud
     - grafana.universphere.cloud
     - argo.universphere.cloud
   # Issuer references are always required.
