@@ -1,0 +1,8 @@
+- name: create GitLab group
+  community.general.gitlab_group:
+    api_url: https://git.universphere.cloud/
+    validate_certs: true
+    api_token: <token>
+    name: TestGroup
+    path: TestGroup
+    state: present

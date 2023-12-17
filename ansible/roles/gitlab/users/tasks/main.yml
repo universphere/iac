@@ -1,0 +1,25 @@
+- name: create GitLab user using external identity provider
+  community.general.gitlab_user:
+    api_url: https://git.universphere.cloud/
+    validate_certs: true
+#    api_token: "{{ access_token }}"
+    api_token: ""
+    name: "Foo Bar"
+    username: "foo.bar"
+    email: foo.bar@test.com
+    identities:
+      - provider: openid_connect
+        extern_uid: "foo.bar"
+    state: present
+    group: TestGroup
+    access_level: developer
+    overwrite_identities: true
+
+#- name: delete GitLab user
+#  community.general.gitlab_user:
+#    api_url: https://git.universphere.cloud/
+#    validate_certs: true
+#    #    api_token: "{{ access_token }}"
+#    api_token: glpat-yCpUzMQe62EFxWAy7Kou
+#    username: myusername
+#    state: absent
