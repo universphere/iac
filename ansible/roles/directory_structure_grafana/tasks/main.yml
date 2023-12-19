@@ -1,0 +1,13 @@
+- name: create folder structure for grafana
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: directory
+    mode: '0700'
+  loop:
+    - "/mnt/grafana"
+    - "/mnt/loki/ingester"
+    - "/mnt/loki/querier"
+    - "/mnt/loki/compactor"
