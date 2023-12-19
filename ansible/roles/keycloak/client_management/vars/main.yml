@@ -71,7 +71,7 @@ clients:
 
   - name: grafana
     client_id: grafana
-    description: this is the grfana client for universphere
+    description: this is the grafana client for universphere
     root_url: https://grafana.universphere.cloud
     admin_url: ""
     base_url: ""
@@ -79,7 +79,7 @@ clients:
     bearerOnly: false
     client_authenticator_type: client-secret
     redirect_uris:
-      - https://grafana.universphere.cloud/auth/callback
+      - https://grafana.universphere.cloud//login/generic_oauth
     web_origins: 
       - https://grafana.universphere.cloud
     standard_flow_enabled: true
