@@ -69,6 +69,30 @@ clients:
     default_client_scopes:
       - argocd
 
+  - name: grafana
+    client_id: grafana
+    description: this is the grfana client for universphere
+    root_url: https://grafana.universphere.cloud
+    admin_url: ""
+    base_url: ""
+    enabled: true
+    bearerOnly: false
+    client_authenticator_type: client-secret
+    redirect_uris:
+      - https://grafana.universphere.cloud/auth/callback
+    web_origins: 
+      - https://grafana.universphere.cloud
+    standard_flow_enabled: true
+    implicit_flow_enabled: false
+    direct_access_grants_enabled: true
+    service_accounts_enabled: true
+    authorization_services_enabled: true
+    public_client: false
+    frontchannel_logout: true
+    protocol: openid-connect
+    default_client_scopes:
+      - grafana
+
 client_scopes:
   - name: harbor
     description: this is the client scope for the harbor oidc integration
@@ -101,5 +125,22 @@ client_scopes:
           multivalued: true
           aggregate.attrs: true
         name: argocd-groups-mapper
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-attribute-mapper
+
+  - name: grafana
+    description: this is the client scope for the grafana oidc integration
+    protocol: openid-connect
+    protocol_mappers:
+      - config:
+          access.token.claim: true
+          claim.name: "groups"
+          id.token.claim: true
+          jsonType.label: String
+          user.attribute: groups
+          userinfo.token.claim: true
+          multivalued: true
+          aggregate.attrs: true
+        name: grafana-groups-mapper
         protocol: openid-connect
         protocolMapper: oidc-usermodel-attribute-mapper
