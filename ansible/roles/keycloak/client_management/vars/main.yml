@@ -79,7 +79,7 @@ clients:
     bearerOnly: false
     client_authenticator_type: client-secret
     redirect_uris:
-      - https://grafana.universphere.cloud//login/generic_oauth
+      - https://grafana.universphere.cloud/login/generic_oauth
     web_origins: 
       - https://grafana.universphere.cloud
     standard_flow_enabled: true
