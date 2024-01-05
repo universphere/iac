@@ -56,7 +56,7 @@ clients:
     client_authenticator_type: client-secret
     redirect_uris:
       - https://argo.universphere.cloud/auth/callback
-    web_origins: 
+    web_origins:
       - https://argo.universphere.cloud
     standard_flow_enabled: true
     implicit_flow_enabled: false
@@ -80,7 +80,7 @@ clients:
     client_authenticator_type: client-secret
     redirect_uris:
       - https://grafana.universphere.cloud/login/generic_oauth
-    web_origins: 
+    web_origins:
       - https://grafana.universphere.cloud
     standard_flow_enabled: true
     implicit_flow_enabled: false
@@ -92,6 +92,28 @@ clients:
     protocol: openid-connect
     default_client_scopes:
       - grafana
+
+  - name: kafka-ui
+    client_id: kafka-ui
+    description: this is the kafka ui client for universphere
+    root_url: https://kafkaui.universphere.cloud/
+    admin_url: ""
+    enabled: true
+    bearerOnly: false
+    client_authenticator_type: client-secret
+    redirect_uris:
+      - https://kafkaui.universphere.cloud/*
+    web_origins: [ ]
+    standard_flow_enabled: true
+    implicit_flow_enabled: false
+    direct_access_grants_enabled: true
+    service_accounts_enabled: true
+    authorization_services_enabled: true
+    public_client: false
+    frontchannel_logout: true
+    protocol: openid-connect
+    default_client_scopes:
+      - kafka-ui
 
 client_scopes:
   - name: harbor
@@ -142,5 +164,22 @@ client_scopes:
           multivalued: true
           aggregate.attrs: true
         name: grafana-groups-mapper
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-attribute-mapper
+
+  - name: kafka-ui
+    description: this is the client scope for the kafka ui oidc integration
+    protocol: openid-connect
+    protocol_mappers:
+      - config:
+          access.token.claim: true
+          claim.name: "groups"
+          id.token.claim: true
+          jsonType.label: String
+          user.attribute: groups
+          userinfo.token.claim: true
+          multivalued: true
+          aggregate.attrs: true
+        name: kafka-ui-groups-mapper
         protocol: openid-connect
         protocolMapper: oidc-usermodel-attribute-mapper
