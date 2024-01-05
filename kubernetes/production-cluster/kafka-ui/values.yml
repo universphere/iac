@@ -88,13 +88,14 @@ service:
 # Ingress configuration
 ingress:
   # Enable ingress resource
-  enabled: false
+  enabled: true
 
   # Annotations for the Ingress
-  annotations: {}
+  annotations: 
+    cert-manager.io/cluster-issuer: prod-issuer
 
   # ingressClassName for the Ingress
-  ingressClassName: ""
+  ingressClassName: "traefik"
 
   # The path for the Ingress
   path: "/"
@@ -103,14 +104,14 @@ ingress:
   pathType: "Prefix"  
 
   # The hostname for the Ingress
-  host: ""
+  host: "kafkaui.universphere.cloud"
 
   # configs for Ingress TLS
   tls:
     # Enable TLS termination for the Ingress
-    enabled: false
+    enabled: true
     # the name of a pre-created Secret containing a TLS private key and certificate
-    secretName: ""
+    secretName: "universphere-prod-tls"
 
   # HTTP paths to add to the Ingress before the default path
   precedingPaths: []
@@ -118,8 +119,7 @@ ingress:
   # Http paths to add to the Ingress after the default path
   succeedingPaths: []
 
-resources:
-  {}
+resources: {}
   # limits:
   #   cpu: 200m
   #   memory: 512Mi

@@ -4,10 +4,9 @@ metadata:
   name: kafka-ui-configmap
 data:
   config.yml: |-
-    kafka:
-      clusters:
-        - name: universphere-kafka
-          bootstrapServers: my-cluster-kafka-bootstrap.default.svc.cluster.local:9092
+    dynamic:
+      config:
+        enabled: true
     spring:
       security:
         oauth2:
@@ -24,61 +23,7 @@ data:
             provider: keycloak
             custom-params:
               type: oauth
-              roles-field: realm_roles
-    rbac:
-      roles:
-        - name: "admin"
-          clusters:
-            - universphere-kafka
-          subjects:
-            - provider: oauth
-              type: role
-              value: "Universphere"
-          permissions:
-            - resource: applicationconfig
-              actions: all
-            - resource: clusterconfig
-              actions: all
-            - resource: topic
-              value: ".*"
-              actions: all
-            - resource: consumer
-              value: ".*"
-              actions: all
-            - resource: schema
-              value: ".*"
-              actions: all
-            - resource: connect
-              value: ".*"
-              actions: all
-            - resource: ksql
-              value: ".*"
-              actions: all
-            - resource: acl
-              value: ".*"
-              actions: [ "view" ]
-        - name: "readonly"
-          clusters:
-            - universphere-kafka
-          subjects:
-            - provider: oauth
-              type: role
-              value: "StaardUp"
-          permissions:
-            - resource: clusterconfig
-              actions: [ "view" ]
-            - resource: topic
-              value: "universphere.*"
-              actions: [ "view" ]
-            - resource: consumer
-              value: ".*"
-              actions: [ view ]
-            - resource: schema
-              value: ".*"
-              actions: [ view ]
-            - resource: connect
-              value: ".*"
-              actions: [ view ]
+              roles-field: groups
     management:
       health:
         ldap:

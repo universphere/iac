@@ -31,3 +31,61 @@ Install Kafka-UI:
 ```bash
 helm install kafka-ui kafka-ui/kafka-ui -f values.yml
 ```
+
+Example for RBAC configuration
+```yaml
+    rbac:
+      roles:
+        - name: "admin"
+          clusters:
+            - universphere-kafka
+          subjects:
+            - provider: oauth
+              type: role
+              value: "Universphere"
+          permissions:
+            - resource: applicationconfig
+              actions: all
+            - resource: clusterconfig
+              actions: all
+            - resource: topic
+              value: ".*"
+              actions: all
+            - resource: consumer
+              value: ".*"
+              actions: all
+            - resource: schema
+              value: ".*"
+              actions: all
+            - resource: connect
+              value: ".*"
+              actions: all
+            - resource: ksql
+              value: ".*"
+              actions: all
+            - resource: acl
+              value: ".*"
+              actions: [ "view" ]
+        - name: "readonly"
+          clusters:
+            - universphere-kafka
+          subjects:
+            - provider: oauth
+              type: role
+              value: "StaardUp"
+          permissions:
+            - resource: clusterconfig
+              actions: [ "view" ]
+            - resource: topic
+              value: "universphere.*"
+              actions: [ "view" ]
+            - resource: consumer
+              value: ".*"
+              actions: [ view ]
+            - resource: schema
+              value: ".*"
+              actions: [ view ]
+            - resource: connect
+              value: ".*"
+              actions: [ view ]
+```
