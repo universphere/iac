@@ -1,4 +1,3 @@
 - hosts: loadbalancer
   roles:
-    - directory_structure_loadbalancer
-    - nginx
+    - haproxy
