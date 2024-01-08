@@ -1,0 +1,28 @@
+- name: create folder structure for sonarqube
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "k8s"
+    group: "k8s"
+    state: directory
+    mode: '0700'
+  loop:
+    - "/mnt/sonarqube/postgres"
+
+- name: Set vm_max_map_count
+  become: true
+  ansible.posix.sysctl:
+    name: vm.max_map_count
+    value: '524288'
+    sysctl_set: true
+    state: present
+    reload: true
+
+
+- name: Set vm_max_map_count
+  become: true
+  pam_limits:
+    domain: k8s
+    limit_type: soft
+    limit_item: nofile
+    value: '131072'
