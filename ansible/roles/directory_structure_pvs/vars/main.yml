@@ -1,0 +1,8 @@
+mountPoints:
+  - /mnt/harbor/registry
+  - /mnt/harbor/redis
+  - /mnt/harbor/trivy
+  - /mnt/harbor/db
+  - /mnt/harbor/jobservice
+  - /mnt/dependency-track/data
+  - /mnt/dependency-track/postgres

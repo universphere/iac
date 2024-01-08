@@ -115,6 +115,30 @@ clients:
     default_client_scopes:
       - kafka-ui
 
+  - name: dependency-track
+    client_id: dependency-track
+    description: this is the dependency track client for universphere
+    root_url: https://dependencytrack.universphere.cloud/
+    admin_url: ""
+    base_url: ""
+    enabled: true
+    bearerOnly: false
+    client_authenticator_type: client-secret
+    redirect_uris:
+      - https://dependencytrack.universphere.cloud/static/oidc-callback.html
+    web_origins:
+      - https://dependencytrack.universphere.cloud/
+    standard_flow_enabled: true
+    implicit_flow_enabled: true
+    direct_access_grants_enabled: false
+    service_accounts_enabled: false
+    authorization_services_enabled: false
+    public_client: false
+    frontchannel_logout: true
+    protocol: openid-connect
+    default_client_scopes:
+      - dependency-track
+
 client_scopes:
   - name: harbor
     description: this is the client scope for the harbor oidc integration
@@ -130,6 +154,23 @@ client_scopes:
           multivalued: true
           aggregate.attrs: true
         name: harbor-groups-mapper
+        protocol: openid-connect
+        protocolMapper: oidc-usermodel-attribute-mapper
+
+  - name: dependency-track
+    description: this is the client scope for the dependency track oidc integration
+    protocol: openid-connect
+    protocol_mappers:
+      - config:
+          access.token.claim: true
+          claim.name: "groups"
+          id.token.claim: true
+          jsonType.label: String
+          user.attribute: groups
+          userinfo.token.claim: true
+          multivalued: true
+          aggregate.attrs: true
+        name: dependency-track-groups-mapper
         protocol: openid-connect
         protocolMapper: oidc-usermodel-attribute-mapper
 
