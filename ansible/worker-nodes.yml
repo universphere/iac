@@ -1,0 +1,3 @@
+- hosts: worker
+  roles:
+    - directory_structure_pvs

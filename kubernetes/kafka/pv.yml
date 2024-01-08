@@ -1,0 +1,111 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kafka-pv-volume-01
+  labels:
+    type: local
+    app: kafka
+spec:
+  # storageClassName: default
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: "/mnt/kafka/01"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - i-k8s-node-6
+                - i-k8s-node-7
+                - i-k8s-node-8
+                - i-k8s-node-9
+                - i-k8s-node-10
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: zookeeper-pv-volume-01
+  labels:
+    type: local
+    app: zookeeper
+spec:
+  # storageClassName: default
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: "/mnt/zookeeper/01"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - i-k8s-node-6
+                - i-k8s-node-7
+                - i-k8s-node-8
+                - i-k8s-node-9
+                - i-k8s-node-10
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: zookeeper-pv-volume-02
+  labels:
+    type: local
+    app: zookeeper
+spec:
+  # storageClassName: default
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: "/mnt/zookeeper/02"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - i-k8s-node-6
+                - i-k8s-node-7
+                - i-k8s-node-8
+                - i-k8s-node-9
+                - i-k8s-node-10
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: zookeeper-pv-volume-03
+  labels:
+    type: local
+    app: zookeeper
+spec:
+  # storageClassName: default
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: "/mnt/zookeeper/03"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - i-k8s-node-6
+                - i-k8s-node-7
+                - i-k8s-node-8
+                - i-k8s-node-9
+                - i-k8s-node-10
