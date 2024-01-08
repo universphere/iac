@@ -25,7 +25,8 @@ spec:
     - grafana.universphere.cloud
     - argo.universphere.cloud
     - sonarqube.universphere.cloud
-    - grafana.universphere.cloud
+    - docu.universphere.cloud
+    - kafkaui.universphere.cloud
   # Issuer references are always required.
   issuerRef:
     name: prod-issuer
