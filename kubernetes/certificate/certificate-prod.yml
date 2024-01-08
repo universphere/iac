@@ -19,7 +19,14 @@ spec:
     size: 2048
     rotationPolicy: Always
   dnsNames:
-    - dev.universphere.cloud
+    - universphere.cloud
+    - harbor.universphere.cloud
+    - dependencytrack.universphere.cloud
+    - grafana.universphere.cloud
+    - argo.universphere.cloud
+    - sonarqube.universphere.cloud
+    - docu.universphere.cloud
+    - kafkaui.universphere.cloud
   # Issuer references are always required.
   issuerRef:
     name: prod-issuer
